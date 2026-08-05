@@ -606,10 +606,54 @@
         </div>
     </div>
 
+    <!-- Decline Reason Modal -->
+    <div id="declineModal" class="hidden" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px;">
+        <div style="background: var(--bg-card); border-radius: 16px; padding: 24px; width: 100%; max-width: 400px; border: 1px solid var(--border);">
+            <h3 style="color: var(--text-primary); margin-bottom: 20px; font-size: 18px;">Decline Request</h3>
+            <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 16px;">Please select a reason for declining this request:</p>
+            
+            <div style="margin-bottom: 16px;">
+                <label style="display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--bg-secondary); border-radius: 8px; margin-bottom: 8px; cursor: pointer; border: 1px solid transparent; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--border)'" onmouseout="this.style.borderColor='transparent'">
+                    <input type="radio" name="declineReason" value="Fee too low" style="width: 18px; height: 18px; accent-color: var(--accent);">
+                    <span style="color: var(--text-primary); font-size: 14px;">Fee too low</span>
+                </label>
+                
+                <label style="display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--bg-secondary); border-radius: 8px; margin-bottom: 8px; cursor: pointer; border: 1px solid transparent; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--border)'" onmouseout="this.style.borderColor='transparent'">
+                    <input type="radio" name="declineReason" value="Schedule conflict" style="width: 18px; height: 18px; accent-color: var(--accent);">
+                    <span style="color: var(--text-primary); font-size: 14px;">Schedule conflict</span>
+                </label>
+                
+                <label style="display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--bg-secondary); border-radius: 8px; margin-bottom: 8px; cursor: pointer; border: 1px solid transparent; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--border)'" onmouseout="this.style.borderColor='transparent'">
+                    <input type="radio" name="declineReason" value="Location too far" style="width: 18px; height: 18px; accent-color: var(--accent);">
+                    <span style="color: var(--text-primary); font-size: 14px;">Location too far</span>
+                </label>
+                
+                <label style="display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--bg-secondary); border-radius: 8px; margin-bottom: 8px; cursor: pointer; border: 1px solid transparent; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--border)'" onmouseout="this.style.borderColor='transparent'">
+                    <input type="radio" name="declineReason" value="Other" id="otherRadio" style="width: 18px; height: 18px; accent-color: var(--accent);">
+                    <span style="color: var(--text-primary); font-size: 14px;">Other</span>
+                </label>
+            </div>
+            
+            <!-- Other text input (hidden by default) -->
+            <div id="otherTextContainer" class="hidden" style="margin-bottom: 16px;">
+                <label style="display: block; color: var(--text-secondary); font-size: 12px; margin-bottom: 6px;">Please specify:</label>
+                <textarea id="otherReasonText" style="width: 100%; padding: 10px; background: var(--bg-input); border: 1.5px solid var(--border); border-radius: 8px; color: var(--text-primary); font-size: 14px; min-height: 80px; resize: vertical;" placeholder="Enter your reason..."></textarea>
+            </div>
+            
+            <div style="display: flex; gap: 10px;">
+                <button onclick="closeDeclineModal()" style="flex: 1; padding: 12px; background: transparent; border: 1.5px solid var(--border); border-radius: 8px; color: var(--text-secondary); font-size: 14px; font-weight: 500; cursor: pointer;">Cancel</button>
+                <button onclick="submitDecline()" style="flex: 1; padding: 12px; background: var(--danger); border: none; border-radius: 8px; color: white; font-size: 14px; font-weight: 600; cursor: pointer;">Decline Request</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Demo credentials
         const DEMO_EMAIL = 'contractor@demo.com';
         const DEMO_PASSWORD = 'demo123';
+        
+        // Current decline request ID
+        let currentDeclineId = null;
         
         // Login function
         function login() {
@@ -668,12 +712,61 @@
             alert('Request ' + id + ' accepted! You can now contact the client to schedule.');
         }
         
+        // Decline request - open modal
         function declineRequest(id) {
-            const reason = prompt('Why are you declining this request?\n\n1. Fee too low\n2. Schedule conflict\n3. Location too far\n4. Other (please specify)');
-            if (reason) {
-                alert('Request ' + id + ' declined. Reason: ' + reason + '\n\nThe office will be notified and may reassign or adjust the fee.');
-            }
+            currentDeclineId = id;
+            document.getElementById('declineModal').classList.remove('hidden');
+            
+            // Reset form
+            const radios = document.querySelectorAll('input[name="declineReason"]');
+            radios.forEach(radio => radio.checked = false);
+            document.getElementById('otherTextContainer').classList.add('hidden');
+            document.getElementById('otherReasonText').value = '';
         }
+        
+        // Close decline modal
+        function closeDeclineModal() {
+            document.getElementById('declineModal').classList.add('hidden');
+            currentDeclineId = null;
+        }
+        
+        // Submit decline
+        function submitDecline() {
+            const selectedReason = document.querySelector('input[name="declineReason"]:checked');
+            
+            if (!selectedReason) {
+                alert('Please select a reason for declining.');
+                return;
+            }
+            
+            let reason = selectedReason.value;
+            
+            // If "Other" is selected, get the text
+            if (reason === 'Other') {
+                const otherText = document.getElementById('otherReasonText').value.trim();
+                if (!otherText) {
+                    alert('Please specify your reason in the text box.');
+                    return;
+                }
+                reason = 'Other: ' + otherText;
+            }
+            
+            alert('Request ' + currentDeclineId + ' declined.\n\nReason: ' + reason + '\n\nThe office will be notified and may reassign or adjust the fee.');
+            closeDeclineModal();
+        }
+        
+        // Show/hide "Other" text box based on selection
+        document.querySelectorAll('input[name="declineReason"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const otherContainer = document.getElementById('otherTextContainer');
+                if (this.value === 'Other') {
+                    otherContainer.classList.remove('hidden');
+                    document.getElementById('otherReasonText').focus();
+                } else {
+                    otherContainer.classList.add('hidden');
+                }
+            });
+        });
     </script>
 </body>
 </html>
