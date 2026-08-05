@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Contractor Portal - Field Operations</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2c5aa0 100%);
+            color: white;
+            padding: 16px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .header p {
+            font-size: 13px;
+            opacity: 0.9;
+            margin-top: 2px;
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 100px 16px 100px 16px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e3c72;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .card-icon {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #1e3c72, #2c5aa0);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+        }
+        
+        /* Buttons */
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 10px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #1e3c72 0%, #2c5aa0 100%);
+            color: white;
+        }
+        
+        .btn-primary:active {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+        
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+        
+        .btn-secondary:active {
+            background: #e0e0e0;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+        
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 6px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #2c5aa0;
+        }
+        
+        textarea.form-input {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.08);
+            z-index: 1000;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 16px;
+            color: #888;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        .nav-item.active {
+            color: #2c5aa0;
+        }
+        
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        /* Status Badge */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-complete {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        /* Photo Upload Area */
+        .photo-upload {
+            border: 2px dashed #ccc;
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .photo-upload:active {
+            background: #f9f9f9;
+            border-color: #2c5aa0;
+        }
+        
+        .photo-upload-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+        
+        .photo-upload-text {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        /* Job List Item */
+        .job-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        
+        .job-info h3 {
+            font-size: 15px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        .job-info p {
+            font-size: 13px;
+            color: #666;
+        }
+        
+        /* Login Screen */
+        .login-screen {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2c5aa0 100%);
+        }
+        
+        .login-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px 24px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .login-logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .login-logo h2 {
+            color: #1e3c72;
+            font-size: 24px;
+            margin-top: 16px;
+        }
+        
+        /* Utility */
+        .text-center {
+            text-align: center;
+        }
+        
+        .mt-3 {
+            margin-top: 24px;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-card">
+            <div class="login-logo">
+                <div style="font-size: 48px;">🏗️</div>
+                <h2>Contractor Portal</h2>
+                <p style="color: #666; margin-top: 8px;">Field Operations App</p>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-input" placeholder="contractor@example.com" id="loginEmail">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-input" placeholder="Enter password" id="loginPassword">
+            </div>
+            
+            <button class="btn btn-primary" onclick="login()">
+                Sign In
+            </button>
+            
+            <div class="text-center mt-3">
+                <p style="font-size: 13px; color: #888;">Demo: Use any email/password</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="mainApp" class="hidden">
+        <!-- Header -->
+        <div class="header">
+            <h1>Contractor Portal</h1>
+            <p>Welcome back, Contractor</p>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Dashboard -->
+            <div id="dashboardView">
+                <div class="card">
+                    <div class="card-title">
+                        <div class="card-icon">📋</div>
+                        My Assignments
+                    </div>
+                    <div class="job-item" onclick="showJobDetail()">
+                        <div class="job-info">
+                            <h3>Site Inspection - Atlanta, GA</h3>
+                            <p>Due: Today at 5:00 PM</p>
+                        </div>
+                        <span class="status-badge status-pending">⚠ Pending</span>
+                    </div>
+                    <div class="job-item" onclick="showJobDetail()">
+                        <div class="job-info">
+                            <h3>Property Review - Charlotte, NC</h3>
+                            <p>Due: Tomorrow at 2:00 PM</p>
+                        </div>
+                        <span class="status-badge status-pending">⚠ Pending</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">
+                        <div class="card-icon">✅</div>
+                        Completed Today
+                    </div>
+                    <p style="color: #666; font-size: 14px;">No completed inspections yet today.</p>
+                </div>
+
+                <button class="btn btn-success" onclick="showNewInspection()">
+                    <span>+</span> Start New Inspection
+                </button>
+            </div>
+
+            <!-- New Inspection Form -->
+            <div id="newInspectionView" class="hidden">
+                <div class="card">
+                    <div class="card-title">
+                        <div class="card-icon">📷</div>
+                        Upload Photos
+                    </div>
+                    <div class="photo-upload" onclick="alert('Photo upload would open camera/gallery')">
+                        <div class="photo-upload-icon">📱</div>
+                        <div class="photo-upload-text">
+                            Tap to take photos or upload from gallery
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">
+                        <div class="card-icon">📝</div>
+                        Inspection Notes
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Property Address</label>
+                        <input type="text" class="form-input" placeholder="Enter full address">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Inspection Notes</label>
+                        <textarea class="form-input" placeholder="Describe what you observed..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <select class="form-input">
+                            <option>Pass</option>
+                            <option>Fail</option>
+                            <option>Needs Review</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="submitInspection()">
+                    Submit Inspection
+                </button>
+                <button class="btn btn-secondary" onclick="showDashboard()">
+                    Cancel
+                </button>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <a href="#" class="nav-item active" onclick="showDashboard()">
+                <div class="nav-icon">🏠</div>
+                <span>Home</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showNewInspection()">
+                <div class="nav-icon">➕</div>
+                <span>New</span>
+            </a>
+            <a href="#" class="nav-item">
+                <div class="nav-icon">📋</div>
+                <span>Jobs</span>
+            </a>
+            <a href="#" class="nav-item">
+                <div class="nav-icon">⚙️</div>
+                <span>Settings</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Simple view management
+        function showDashboard() {
+            document.getElementById('dashboardView').classList.remove('hidden');
+            document.getElementById('newInspectionView').classList.add('hidden');
+        }
+
+        function showNewInspection() {
+            document.getElementById('dashboardView').classList.add('hidden');
+            document.getElementById('newInspectionView').classList.remove('hidden');
+        }
+
+        function showJobDetail() {
+            alert('Job detail view would open here');
+        }
+
+        function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (email && password) {
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('mainApp').classList.remove('hidden');
+            } else {
+                alert('Please enter email and password');
+            }
+        }
+
+        function submitInspection() {
+            alert('Inspection submitted successfully!');
+            showDashboard();
+        }
+
+        // Initialize
+        showDashboard();
+    </script>
+</body>
+</html>
