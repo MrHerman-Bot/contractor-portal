@@ -5,6 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Contractor Portal - Field Operations</title>
     <style>
+        :root {
+            /* Dark Mode Colors (Default) */
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-card: #21262d;
+            --bg-input: #21262d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --text-muted: #6e7681;
+            --accent: #58a6ff;
+            --accent-hover: #79b8ff;
+            --success: #238636;
+            --success-hover: #2ea043;
+            --danger: #da3633;
+            --warning: #d29922;
+            --border: #30363d;
+            --shadow: rgba(0,0,0,0.4);
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -14,72 +33,83 @@
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: #f5f5f5;
-            color: #333;
+            background: var(--bg-primary);
+            color: var(--text-primary);
             line-height: 1.5;
             -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
         }
         
-        /* Header */
-        .header {
-            background: linear-gradient(135deg, #1e3c72 0%, #2c5aa0 100%);
-            color: white;
-            padding: 16px 20px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .header h1 {
-            font-size: 20px;
-            font-weight: 600;
-        }
-        
-        .header p {
-            font-size: 13px;
-            opacity: 0.9;
-            margin-top: 2px;
-        }
-        
-        /* Main Content */
-        .main-content {
-            padding: 100px 16px 100px 16px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        /* Cards */
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-        
-        .card-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: #1e3c72;
-            margin-bottom: 12px;
+        /* Login Screen */
+        .login-screen {
+            min-height: 100vh;
             display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .card-icon {
-            width: 24px;
-            height: 24px;
-            background: linear-gradient(135deg, #1e3c72, #2c5aa0);
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
+            flex-direction: column;
             justify-content: center;
-            color: white;
+            padding: 20px;
+            background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+        }
+        
+        .login-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 32px 24px;
+            box-shadow: 0 10px 40px var(--shadow);
+            border: 1px solid var(--border);
+        }
+        
+        .login-logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .login-logo-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        
+        .login-logo h2 {
+            color: var(--text-primary);
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        
+        .login-logo p {
+            color: var(--text-secondary);
             font-size: 14px;
+        }
+        
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 14px;
+            background: var(--bg-input);
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-size: 16px;
+            color: var(--text-primary);
+            transition: border-color 0.2s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        
+        .form-input::placeholder {
+            color: var(--text-muted);
         }
         
         /* Buttons */
@@ -93,66 +123,232 @@
             border: none;
             border-radius: 10px;
             font-size: 16px;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
-            margin-bottom: 10px;
         }
         
         .btn-primary {
-            background: linear-gradient(135deg, #1e3c72 0%, #2c5aa0 100%);
-            color: white;
+            background: var(--accent);
+            color: #fff;
+        }
+        
+        .btn-primary:hover {
+            background: var(--accent-hover);
         }
         
         .btn-primary:active {
             transform: scale(0.98);
-            opacity: 0.9;
-        }
-        
-        .btn-secondary {
-            background: #f0f0f0;
-            color: #333;
-        }
-        
-        .btn-secondary:active {
-            background: #e0e0e0;
         }
         
         .btn-success {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-            color: white;
+            background: var(--success);
+            color: #fff;
         }
         
-        /* Form Elements */
-        .form-group {
+        .btn-success:hover {
+            background: var(--success-hover);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: var(--text-primary);
+            border: 1.5px solid var(--border);
+        }
+        
+        .btn-outline:hover {
+            background: var(--bg-secondary);
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: #fff;
+        }
+        
+        /* Header */
+        .header {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 16px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .header p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 100px 16px 100px 16px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 16px;
             margin-bottom: 16px;
+            border: 1px solid var(--border);
         }
         
-        .form-label {
-            display: block;
-            font-size: 14px;
-            font-weight: 500;
-            color: #555;
-            margin-bottom: 6px;
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
         }
         
-        .form-input {
-            width: 100%;
-            padding: 12px 14px;
-            border: 1.5px solid #e0e0e0;
-            border-radius: 8px;
+        .card-title {
             font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .card-icon {
+            width: 24px;
+            height: 24px;
+            background: var(--accent);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 14px;
+        }
+        
+        /* Request Items */
+        .request-item {
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+            cursor: pointer;
             transition: border-color 0.2s;
         }
         
-        .form-input:focus {
-            outline: none;
-            border-color: #2c5aa0;
+        .request-item:hover {
+            border-color: var(--accent);
         }
         
-        textarea.form-input {
-            min-height: 100px;
-            resize: vertical;
+        .request-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .request-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .request-client {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .request-fee {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        
+        .request-address {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+        
+        .request-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .request-due {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .request-due.urgent {
+            color: var(--danger);
+        }
+        
+        .request-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-new {
+            background: rgba(88, 166, 255, 0.15);
+            color: var(--accent);
+        }
+        
+        .status-accepted {
+            background: rgba(35, 134, 54, 0.15);
+            color: var(--success);
+        }
+        
+        .status-completed {
+            background: rgba(139, 148, 158, 0.15);
+            color: var(--text-secondary);
+        }
+        
+        /* Action Buttons Row */
+        .action-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .action-row .btn {
+            flex: 1;
+            padding: 10px;
+            font-size: 14px;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+        
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        
+        .empty-state h3 {
+            color: var(--text-secondary);
+            margin-bottom: 8px;
         }
         
         /* Bottom Navigation */
@@ -161,11 +357,11 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: white;
+            background: var(--bg-secondary);
             display: flex;
             justify-content: space-around;
             padding: 8px 0;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.08);
+            border-top: 1px solid var(--border);
             z-index: 1000;
         }
         
@@ -175,15 +371,18 @@
             align-items: center;
             gap: 4px;
             padding: 6px 16px;
-            color: #888;
+            color: var(--text-muted);
             text-decoration: none;
             font-size: 11px;
             font-weight: 500;
             transition: color 0.2s;
+            cursor: pointer;
+            border: none;
+            background: none;
         }
         
         .nav-item.active {
-            color: #2c5aa0;
+            color: var(--accent);
         }
         
         .nav-icon {
@@ -195,105 +394,12 @@
             font-size: 20px;
         }
         
-        /* Status Badge */
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
+        /* Hidden */
+        .hidden {
+            display: none !important;
         }
         
-        .status-pending {
-            background: #fff3cd;
-            color: #856404;
-        }
-        
-        .status-complete {
-            background: #d4edda;
-            color: #155724;
-        }
-        
-        /* Photo Upload Area */
-        .photo-upload {
-            border: 2px dashed #ccc;
-            border-radius: 12px;
-            padding: 40px 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .photo-upload:active {
-            background: #f9f9f9;
-            border-color: #2c5aa0;
-        }
-        
-        .photo-upload-icon {
-            font-size: 48px;
-            margin-bottom: 12px;
-        }
-        
-        .photo-upload-text {
-            color: #666;
-            font-size: 14px;
-        }
-        
-        /* Job List Item */
-        .job-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 16px;
-            background: #f9f9f9;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            cursor: pointer;
-        }
-        
-        .job-info h3 {
-            font-size: 15px;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 4px;
-        }
-        
-        .job-info p {
-            font-size: 13px;
-            color: #666;
-        }
-        
-        /* Login Screen */
-        .login-screen {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 20px;
-            background: linear-gradient(135deg, #1e3c72 0%, #2c5aa0 100%);
-        }
-        
-        .login-card {
-            background: white;
-            border-radius: 16px;
-            padding: 32px 24px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-        }
-        
-        .login-logo {
-            text-align: center;
-            margin-bottom: 32px;
-        }
-        
-        .login-logo h2 {
-            color: #1e3c72;
-            font-size: 24px;
-            margin-top: 16px;
-        }
-        
-        /* Utility */
+        /* Text utilities */
         .text-center {
             text-align: center;
         }
@@ -302,8 +408,8 @@
             margin-top: 24px;
         }
         
-        .hidden {
-            display: none !important;
+        .mb-2 {
+            margin-bottom: 16px;
         }
     </style>
 </head>
@@ -312,9 +418,13 @@
     <div id="loginScreen" class="login-screen">
         <div class="login-card">
             <div class="login-logo">
-                <div style="font-size: 48px;">🏗️</div>
+                <div class="login-logo-icon">🏗️</div>
                 <h2>Contractor Portal</h2>
-                <p style="color: #666; margin-top: 8px;">Field Operations App</p>
+                <p>Field Operations</p>
+            </div>
+            
+            <div id="loginError" class="hidden" style="background: rgba(218, 54, 51, 0.15); color: #f85149; padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 14px; text-align: center;">
+                Invalid email or password
             </div>
             
             <div class="form-group">
@@ -332,7 +442,11 @@
             </button>
             
             <div class="text-center mt-3">
-                <p style="font-size: 13px; color: #888;">Demo: Use any email/password</p>
+                <p style="font-size: 13px; color: var(--text-muted);">
+                    Demo Credentials:<br>
+                    Email: contractor@demo.com<br>
+                    Password: demo123
+                </p>
             </div>
         </div>
     </div>
@@ -342,150 +456,224 @@
         <!-- Header -->
         <div class="header">
             <h1>Contractor Portal</h1>
-            <p>Welcome back, Contractor</p>
+            <p id="contractorName">Welcome back</p>
         </div>
 
         <!-- Main Content -->
         <div class="main-content">
-            <!-- Dashboard -->
+            <!-- Dashboard View -->
             <div id="dashboardView">
+                <!-- Active Requests Section -->
                 <div class="card">
-                    <div class="card-title">
-                        <div class="card-icon">📋</div>
-                        My Assignments
-                    </div>
-                    <div class="job-item" onclick="showJobDetail()">
-                        <div class="job-info">
-                            <h3>Site Inspection - Atlanta, GA</h3>
-                            <p>Due: Today at 5:00 PM</p>
+                    <div class="card-header">
+                        <div class="card-title">
+                            <div class="card-icon">📢</div>
+                            Active Requests
                         </div>
-                        <span class="status-badge status-pending">⚠ Pending</span>
+                        <span style="font-size: 12px; color: var(--text-muted);">3 pending</span>
                     </div>
-                    <div class="job-item" onclick="showJobDetail()">
-                        <div class="job-info">
-                            <h3>Property Review - Charlotte, NC</h3>
-                            <p>Due: Tomorrow at 2:00 PM</p>
+                    
+                    <!-- Request 1 - New -->
+                    <div class="request-item" onclick="viewRequest(1)">
+                        <div class="request-header">
+                            <div class="request-client">Johnson Residence</div>
+                            <div class="request-fee">$85.00</div>
                         </div>
-                        <span class="status-badge status-pending">⚠ Pending</span>
+                        <div class="request-address">📍 1234 Peachtree Street, Atlanta, GA 30309</div>
+                        <div class="request-meta">
+                            <div class="request-due urgent">
+                                <span>⏰</span>
+                                <span>Due: Today, 5:00 PM</span>
+                            </div>
+                            <span class="request-status status-new">New</span>
+                        </div>
+                        <div class="action-row">
+                            <button class="btn btn-success" onclick="event.stopPropagation(); acceptRequest(1)">✓ Accept</button>
+                            <button class="btn btn-outline" onclick="event.stopPropagation(); declineRequest(1)">✕ Decline</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Request 2 - New -->
+                    <div class="request-item" onclick="viewRequest(2)">
+                        <div class="request-header">
+                            <div class="request-client">Smith Property LLC</div>
+                            <div class="request-fee">$95.00</div>
+                        </div>
+                        <div class="request-address">📍 5678 Oak Drive, Charlotte, NC 28202</div>
+                        <div class="request-meta">
+                            <div class="request-due">
+                                <span>📅</span>
+                                <span>Due: Tomorrow, 2:00 PM</span>
+                            </div>
+                            <span class="request-status status-new">New</span>
+                        </div>
+                        <div class="action-row">
+                            <button class="btn btn-success" onclick="event.stopPropagation(); acceptRequest(2)">✓ Accept</button>
+                            <button class="btn btn-outline" onclick="event.stopPropagation(); declineRequest(2)">✕ Decline</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Request 3 - Accepted -->
+                    <div class="request-item" onclick="viewRequest(3)">
+                        <div class="request-header">
+                            <div class="request-client">Williams Family Trust</div>
+                            <div class="request-fee">$75.00</div>
+                        </div>
+                        <div class="request-address">📍 9012 Pine Lane, Birmingham, AL 35203</div>
+                        <div class="request-meta">
+                            <div class="request-due">
+                                <span>📅</span>
+                                <span>Due: Aug 3, 10:00 AM</span>
+                            </div>
+                            <span class="request-status status-accepted">Accepted</span>
+                        </div>
                     </div>
                 </div>
-
+                
+                <!-- Quick Stats -->
                 <div class="card">
                     <div class="card-title">
-                        <div class="card-icon">✅</div>
-                        Completed Today
+                        <div class="card-icon">📊</div>
+                        This Month
                     </div>
-                    <p style="color: #666; font-size: 14px;">No completed inspections yet today.</p>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; text-align: center;">
+                        <div>
+                            <div style="font-size: 24px; font-weight: 700; color: var(--accent);">12</div>
+                            <div style="font-size: 12px; color: var(--text-muted);">Completed</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 24px; font-weight: 700; color: var(--success);">$1,245</div>
+                            <div style="font-size: 12px; color: var(--text-muted);">Earned</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 24px; font-weight: 700; color: var(--text-primary);">3</div>
+                            <div style="font-size: 12px; color: var(--text-muted);">Pending</div>
+                        </div>
+                    </div>
                 </div>
-
-                <button class="btn btn-success" onclick="showNewInspection()">
-                    <span>+</span> Start New Inspection
-                </button>
             </div>
-
-            <!-- New Inspection Form -->
-            <div id="newInspectionView" class="hidden">
+            
+            <!-- Other views will go here -->
+            <div id="requestsView" class="hidden">
                 <div class="card">
-                    <div class="card-title">
-                        <div class="card-icon">📷</div>
-                        Upload Photos
-                    </div>
-                    <div class="photo-upload" onclick="alert('Photo upload would open camera/gallery')">
-                        <div class="photo-upload-icon">📱</div>
-                        <div class="photo-upload-text">
-                            Tap to take photos or upload from gallery
-                        </div>
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📋</div>
+                        <h3>All Requests</h3>
+                        <p>Full request list coming soon</p>
                     </div>
                 </div>
-
+            </div>
+            
+            <div id="reportsView" class="hidden">
                 <div class="card">
-                    <div class="card-title">
-                        <div class="card-icon">📝</div>
-                        Inspection Notes
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Property Address</label>
-                        <input type="text" class="form-input" placeholder="Enter full address">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Inspection Notes</label>
-                        <textarea class="form-input" placeholder="Describe what you observed..."></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Status</label>
-                        <select class="form-input">
-                            <option>Pass</option>
-                            <option>Fail</option>
-                            <option>Needs Review</option>
-                        </select>
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📈</div>
+                        <h3>Reports</h3>
+                        <p>Completed request reports coming soon</p>
                     </div>
                 </div>
-
-                <button class="btn btn-primary" onclick="submitInspection()">
-                    Submit Inspection
-                </button>
-                <button class="btn btn-secondary" onclick="showDashboard()">
-                    Cancel
-                </button>
+            </div>
+            
+            <div id="messagesView" class="hidden">
+                <div class="card">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">✉️</div>
+                        <h3>Messages</h3>
+                        <p>Office communication coming soon</p>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- Bottom Navigation -->
         <div class="bottom-nav">
-            <a href="#" class="nav-item active" onclick="showDashboard()">
+            <button class="nav-item active" onclick="showView('dashboard')">
                 <div class="nav-icon">🏠</div>
                 <span>Home</span>
-            </a>
-            <a href="#" class="nav-item" onclick="showNewInspection()">
-                <div class="nav-icon">➕</div>
-                <span>New</span>
-            </a>
-            <a href="#" class="nav-item">
+            </button>
+            <button class="nav-item" onclick="showView('requests')">
                 <div class="nav-icon">📋</div>
-                <span>Jobs</span>
-            </a>
-            <a href="#" class="nav-item">
-                <div class="nav-icon">⚙️</div>
-                <span>Settings</span>
-            </a>
+                <span>Requests</span>
+            </button>
+            <button class="nav-item" onclick="showView('reports')">
+                <div class="nav-icon">📈</div>
+                <span>Reports</span>
+            </button>
+            <button class="nav-item" onclick="showView('messages')">
+                <div class="nav-icon">✉️</div>
+                <span>Messages</span>
+            </button>
         </div>
     </div>
 
     <script>
-        // Simple view management
-        function showDashboard() {
-            document.getElementById('dashboardView').classList.remove('hidden');
-            document.getElementById('newInspectionView').classList.add('hidden');
-        }
-
-        function showNewInspection() {
-            document.getElementById('dashboardView').classList.add('hidden');
-            document.getElementById('newInspectionView').classList.remove('hidden');
-        }
-
-        function showJobDetail() {
-            alert('Job detail view would open here');
-        }
-
+        // Demo credentials
+        const DEMO_EMAIL = 'contractor@demo.com';
+        const DEMO_PASSWORD = 'demo123';
+        
+        // Login function
         function login() {
-            const email = document.getElementById('loginEmail').value;
+            const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
+            const errorDiv = document.getElementById('loginError');
             
-            if (email && password) {
+            if (email === DEMO_EMAIL && password === DEMO_PASSWORD) {
+                // Hide login, show app
                 document.getElementById('loginScreen').classList.add('hidden');
                 document.getElementById('mainApp').classList.remove('hidden');
+                
+                // Set contractor name
+                document.getElementById('contractorName').textContent = 'Welcome back, Demo Contractor';
+                
+                // Clear error
+                errorDiv.classList.add('hidden');
             } else {
-                alert('Please enter email and password');
+                // Show error
+                errorDiv.classList.remove('hidden');
             }
         }
-
-        function submitInspection() {
-            alert('Inspection submitted successfully!');
-            showDashboard();
+        
+        // Handle Enter key on login form
+        document.getElementById('loginPassword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                login();
+            }
+        });
+        
+        // View management
+        function showView(viewName) {
+            // Hide all views
+            document.getElementById('dashboardView').classList.add('hidden');
+            document.getElementById('requestsView').classList.add('hidden');
+            document.getElementById('reportsView').classList.add('hidden');
+            document.getElementById('messagesView').classList.add('hidden');
+            
+            // Show selected view
+            document.getElementById(viewName + 'View').classList.remove('hidden');
+            
+            // Update nav buttons
+            const navButtons = document.querySelectorAll('.nav-item');
+            navButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // Find the clicked button and make it active
+            event.target.closest('.nav-item').classList.add('active');
         }
-
-        // Initialize
-        showDashboard();
+        
+        // Request actions
+        function viewRequest(id) {
+            alert('View full request details for ID: ' + id);
+        }
+        
+        function acceptRequest(id) {
+            alert('Request ' + id + ' accepted! You can now contact the client to schedule.');
+        }
+        
+        function declineRequest(id) {
+            const reason = prompt('Why are you declining this request?\n\n1. Fee too low\n2. Schedule conflict\n3. Location too far\n4. Other (please specify)');
+            if (reason) {
+                alert('Request ' + id + ' declined. Reason: ' + reason + '\n\nThe office will be notified and may reassign or adjust the fee.');
+            }
+        }
     </script>
 </body>
 </html>
