@@ -553,8 +553,164 @@
                 </div>
             </div>
             
-            <!-- Other views will go here -->
-            <div id="requestsView" class="hidden">
+            <!-- Request Detail View -->
+            <div id="requestDetailView" class="hidden">
+                <!-- Back Button -->
+                <button onclick="showDashboard()" style="background: transparent; border: none; color: var(--accent); font-size: 14px; cursor: pointer; margin-bottom: 16px; display: flex; align-items: center; gap: 6px;">
+                    ← Back to Dashboard
+                </button>
+                
+                <!-- Property Photo (if exists) -->
+                <div class="card" id="propertyPhotoCard">
+                    <div class="card-title">
+                        <div class="card-icon">📸</div>
+                        Property Photo
+                    </div>
+                    <div style="background: var(--bg-secondary); border-radius: 8px; height: 200px; display: flex; align-items: center; justify-content: center; color: var(--text-muted);">
+                        <span style="font-size: 48px;">🏠</span>
+                    </div>
+                    <p style="font-size: 12px; color: var(--text-muted); margin-top: 8px; text-align: center;">From previous inspection</p>
+                </div>
+                
+                <!-- Client Info -->
+                <div class="card">
+                    <div class="card-title">
+                        <div class="card-icon">👤</div>
+                        Client Information
+                    </div>
+                    <div style="margin-bottom: 12px;">
+                        <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 2px;">Client Name</label>
+                        <div style="font-size: 16px; font-weight: 600; color: var(--text-primary);" id="detailClientName">Johnson Residence</div>
+                    </div>
+                    <div style="margin-bottom: 12px;">
+                        <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 2px;">Address</label>
+                        <div style="font-size: 14px; color: var(--text-primary);">📍 1234 Peachtree Street, Atlanta, GA 30309</div>
+                    </div>
+                    <div style="margin-bottom: 12px;">
+                        <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 2px;">Contact Name</label>
+                        <div style="font-size: 14px; color: var(--text-primary);">Michael Johnson</div>
+                    </div>
+                    <div>
+                        <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 2px;">Contact Phone</label>
+                        <div style="font-size: 14px; color: var(--accent);">📱 (404) 555-0123</div>
+                    </div>
+                </div>
+                
+                <!-- Project Details -->
+                <div class="card">
+                    <div class="card-title">
+                        <div class="card-icon">📋</div>
+                        Project Details
+                    </div>
+                    <div style="margin-bottom: 12px;">
+                        <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 2px;">Requested Due Date</label>
+                        <div style="font-size: 14px; color: var(--text-primary); font-weight: 500;">Today</div>
+                    </div>
+                    <div style="margin-bottom: 12px;">
+                        <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 2px;">Project Specs</label>
+                        <div style="font-size: 14px; color: var(--text-primary);">2,450 sq ft</div>
+                    </div>
+                    <div>
+                        <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 2px;">Requester Notes</label>
+                        <div style="font-size: 14px; color: var(--text-primary); background: var(--bg-secondary); padding: 12px; border-radius: 8px;">Please call before arriving. Gate code is 4729.</div>
+                    </div>
+                </div>
+                
+                <!-- Budget / Draw Percentages -->
+                <div class="card">
+                    <div class="card-title">
+                        <div class="card-icon">💰</div>
+                        Budget - Draw Percentages
+                    </div>
+                    <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">Select the percentage completed for each draw:</p>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Draw 1</label>
+                        <select class="form-input" id="draw1Percent">
+                            <option value="">Select percentage...</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Draw 2</label>
+                        <select class="form-input" id="draw2Percent">
+                            <option value="">Select percentage...</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Draw 3</label>
+                        <select class="form-input" id="draw3Percent">
+                            <option value="">Select percentage...</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Scheduling Section -->
+                <div class="card">
+                    <div class="card-title">
+                        <div class="card-icon">📅</div>
+                        Schedule Visit
+                    </div>
+                    
+                    <!-- Contact Attempt Section -->
+                    <div style="margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
+                        <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 12px;">Contact the client to schedule:</p>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Who did you speak with?</label>
+                            <select class="form-input" id="contactPerson">
+                                <option value="">Select...</option>
+                                <option value="Builder">Builder</option>
+                                <option value="Borrower">Borrower</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Contact Method</label>
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                <button type="button" class="contact-method-btn" data-method="Phone Call" style="flex: 1; padding: 12px; background: var(--bg-secondary); border: 1.5px solid var(--border); border-radius: 8px; color: var(--text-primary); cursor: pointer; font-size: 14px;">📞 Phone Call</button>
+                                <button type="button" class="contact-method-btn" data-method="Text Message" style="flex: 1; padding: 12px; background: var(--bg-secondary); border: 1.5px solid var(--border); border-radius: 8px; color: var(--text-primary); cursor: pointer; font-size: 14px;">📱 Text</button>
+                                <button type="button" class="contact-method-btn" data-method="Left Message" style="flex: 1; padding: 12px; background: var(--bg-secondary); border: 1.5px solid var(--border); border-radius: 8px; color: var(--text-primary); cursor: pointer; font-size: 14px;">📢 Left Msg</button>
+                                <button type="button" class="contact-method-btn" data-method="Sent Text" style="flex: 1; padding: 12px; background: var(--bg-secondary); border: 1.5px solid var(--border); border-radius: 8px; color: var(--text-primary); cursor: pointer; font-size: 14px;">✉️ Sent Text</button>
+                            </div>
+                            <input type="hidden" id="selectedContactMethod">
+                        </div>
+                    </div>
+                    
+                    <!-- Schedule Date/Time -->
+                    <div id="scheduleDateTime" class="hidden">
+                        <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 12px;">When is the visit scheduled?</p>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Date</label>
+                            <input type="date" class="form-input" id="scheduledDate">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Time</label>
+                            <input type="time" class="form-input" id="scheduledTime">
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="submitSchedule()">
+                        🚀 Submit Schedule to Office
+                    </button>
+                </div>
+                
+                <!-- Fee Amount -->
+                <div class="card" style="background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-secondary) 100%);">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <div>
+                            <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 2px;">Your Fee</div>
+                            <div style="font-size: 28px; font-weight: 700; color: var(--accent);">$85.00</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <span class="request-status status-accepted">Accepted</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
                 <div class="card">
                     <div class="empty-state">
                         <div class="empty-state-icon">📋</div>
@@ -688,6 +844,7 @@
         function showView(viewName) {
             // Hide all views
             document.getElementById('dashboardView').classList.add('hidden');
+            document.getElementById('requestDetailView').classList.add('hidden');
             document.getElementById('requestsView').classList.add('hidden');
             document.getElementById('reportsView').classList.add('hidden');
             document.getElementById('messagesView').classList.add('hidden');
@@ -703,9 +860,131 @@
             event.target.closest('.nav-item').classList.add('active');
         }
         
+        function showDashboard() {
+            // Hide all views
+            document.getElementById('dashboardView').classList.remove('hidden');
+            document.getElementById('requestDetailView').classList.add('hidden');
+            document.getElementById('requestsView').classList.add('hidden');
+            document.getElementById('reportsView').classList.add('hidden');
+            document.getElementById('messagesView').classList.add('hidden');
+            
+            // Update nav buttons - make Home active
+            const navButtons = document.querySelectorAll('.nav-item');
+            navButtons.forEach(btn => btn.classList.remove('active'));
+            navButtons[0].classList.add('active');
+        }
+        
         // Request actions
         function viewRequest(id) {
-            alert('View full request details for ID: ' + id);
+            // Hide dashboard, show request detail
+            document.getElementById('dashboardView').classList.add('hidden');
+            document.getElementById('requestDetailView').classList.remove('hidden');
+            
+            // Populate draw percentages (0-100% in 5% increments)
+            // For demo, using 0% minimum (in real app, would check previous inspection)
+            populateDrawPercentages('draw1Percent', 0);
+            populateDrawPercentages('draw2Percent', 0);
+            populateDrawPercentages('draw3Percent', 0);
+            
+            // Setup contact method buttons
+            setupContactMethodButtons();
+        }
+        
+        function populateDrawPercentages(selectId, minimumPercent) {
+            const select = document.getElementById(selectId);
+            // Clear existing options except first
+            while (select.options.length > 1) {
+                select.remove(1);
+            }
+            
+            // Add options from minimum to 100% in 5% increments
+            for (let i = minimumPercent; i <= 100; i += 5) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i + '%';
+                select.appendChild(option);
+            }
+        }
+        
+        function setupContactMethodButtons() {
+            const buttons = document.querySelectorAll('.contact-method-btn');
+            buttons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    buttons.forEach(b => {
+                        b.style.background = 'var(--bg-secondary)';
+                        b.style.borderColor = 'var(--border)';
+                        b.style.color = 'var(--text-primary)';
+                    });
+                    
+                    // Add active style to clicked button
+                    this.style.background = 'var(--accent)';
+                    this.style.borderColor = 'var(--accent)';
+                    this.style.color = '#fff';
+                    
+                    // Set hidden input value
+                    document.getElementById('selectedContactMethod').value = this.dataset.method;
+                    
+                    // Show/hide date/time based on method
+                    const method = this.dataset.method;
+                    const dateTimeSection = document.getElementById('scheduleDateTime');
+                    
+                    if (method === 'Phone Call' || method === 'Text Message') {
+                        dateTimeSection.classList.remove('hidden');
+                    } else {
+                        dateTimeSection.classList.add('hidden');
+                        // Clear date/time fields
+                        document.getElementById('scheduledDate').value = '';
+                        document.getElementById('scheduledTime').value = '';
+                    }
+                });
+            });
+        }
+        
+        function submitSchedule() {
+            const contactPerson = document.getElementById('contactPerson').value;
+            const contactMethod = document.getElementById('selectedContactMethod').value;
+            const scheduledDate = document.getElementById('scheduledDate').value;
+            const scheduledTime = document.getElementById('scheduledTime').value;
+            
+            // Validation
+            if (!contactPerson) {
+                alert('Please select who you spoke with (Builder or Borrower).');
+                return;
+            }
+            
+            if (!contactMethod) {
+                alert('Please select a contact method.');
+                return;
+            }
+            
+            // For Phone Call and Text Message, require date/time
+            if ((contactMethod === 'Phone Call' || contactMethod === 'Text Message') && (!scheduledDate || !scheduledTime)) {
+                alert('Please select both date and time for the scheduled visit.');
+                return;
+            }
+            
+            // Build confirmation message
+            let message = 'Schedule submitted to office!\n\n';
+            message += 'Contact: ' + contactPerson + '\n';
+            message += 'Method: ' + contactMethod + '\n';
+            
+            if (scheduledDate && scheduledTime) {
+                // Convert to 12-hour format
+                const timeParts = scheduledTime.split(':');
+                let hours = parseInt(timeParts[0]);
+                const minutes = timeParts[1];
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12;
+                hours = hours ? hours : 12;
+                const formattedTime = hours + ':' + minutes + ' ' + ampm;
+                
+                message += 'Scheduled: ' + scheduledDate + ' at ' + formattedTime + '\n';
+            }
+            
+            message += '\nThe office has been notified.';
+            
+            alert(message);
         }
         
         function acceptRequest(id) {
