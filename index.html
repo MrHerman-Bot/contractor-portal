@@ -779,12 +779,31 @@
             </div>
             
             <div id="reportsView" class="hidden">
+                <!-- Date Range Selection -->
                 <div class="card">
-                    <div class="empty-state">
-                        <div class="empty-state-icon">📈</div>
-                        <h3>Reports</h3>
-                        <p>Completed request reports coming soon</p>
+                    <div class="card-title">
+                        <div class="card-icon">📅</div>
+                        Report Date Range
                     </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Start Date</label>
+                        <input type="date" class="form-input" id="reportStartDate">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">End Date</label>
+                        <input type="date" class="form-input" id="reportEndDate">
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="generateReport()" style="width: 100%;">
+                        📊 Generate Report
+                    </button>
+                </div>
+                
+                <!-- Report Results -->
+                <div id="reportResults">
+                    <!-- Populated by JavaScript -->
                 </div>
             </div>
             
@@ -1459,6 +1478,14 @@
                 renderPendingRequests();
                 renderCompletedRequests();
                 showRequestsFilter('pending');
+            } else if (viewName === 'reports') {
+                // Set default date range (last 30 days)
+                const endDate = new Date();
+                const startDate = new Date();
+                startDate.setDate(startDate.getDate() - 30);
+                
+                document.getElementById('reportEndDate').value = endDate.toISOString().split('T')[0];
+                document.getElementById('reportStartDate').value = startDate.toISOString().split('T')[0];
             }
         };
         
@@ -1474,6 +1501,136 @@
                 }
             });
         });
+        
+        // Report Generation
+        function generateReport() {
+            const startDateInput = document.getElementById('reportStartDate').value;
+            const endDateInput = document.getElementById('reportEndDate').value;
+            const resultsContainer = document.getElementById('reportResults');
+            
+            // Validation
+            if (!startDateInput || !endDateInput) {
+                alert('Please select both start and end dates.');
+                return;
+            }
+            
+            const startDate = new Date(startDateInput);
+            const endDate = new Date(endDateInput);
+            
+            if (startDate > endDate) {
+                alert('Start date must be before or equal to end date.');
+                return;
+            }
+            
+            // Filter completed requests by date range
+            const filteredRequests = completedRequests.filter(req => {
+                const reqDate = new Date(req.completedDate);
+                // Set hours to compare dates only (ignore time)
+                const reqDateOnly = new Date(reqDate.getFullYear(), reqDate.getMonth(), reqDate.getDate());
+                const startDateOnly = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+                const endDateOnly = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+                
+                return reqDateOnly >= startDateOnly && reqDateOnly <= endDateOnly;
+            });
+            
+            // Sort by date ascending
+            filteredRequests.sort((a, b) => new Date(a.completedDate) - new Date(b.completedDate));
+            
+            // Calculate totals
+            const totalCount = filteredRequests.length;
+            const totalFees = filteredRequests.reduce((sum, req) => sum + req.fee, 0);
+            
+            // Build report HTML
+            let html = '';
+            
+            if (totalCount === 0) {
+                html = `
+                    <div class="card">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📭</div>
+                            <h3>No Results</h3>
+                            <p>No completed requests found for the selected date range.</p>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Summary card
+                html += `
+                    <div class="card" style="background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-card) 100%);">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-size: 12px; color: var(--text-muted);">Total Requests</div>
+                                <div style="font-size: 24px; font-weight: 700; color: var(--text-primary);">${totalCount}</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-size: 12px; color: var(--text-muted);">Total Fees</div>
+                                <div style="font-size: 28px; font-weight: 700; color: var(--success);">$${totalFees.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Date range info
+                const formattedStart = startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                const formattedEnd = endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                
+                html += `
+                    <div style="font-size: 12px; color: var(--text-muted); margin: 16px 0 12px 0; text-align: center;">
+                        ${formattedStart} - ${formattedEnd}
+                    </div>
+                `;
+                
+                // Report table
+                html += `<div class="card" style="padding: 0; overflow: hidden;">`;
+                html += `<div style="overflow-x: auto;">`;
+                html += `<table style="width: 100%; border-collapse: collapse; font-size: 13px;">`;
+                
+                // Table header
+                html += `
+                    <thead>
+                        <tr style="background: var(--bg-secondary);">
+                            <th style="padding: 12px 16px; text-align: left; font-weight: 600; color: var(--text-primary); border-bottom: 1px solid var(--border); white-space: nowrap;">Date</th>
+                            <th style="padding: 12px 16px; text-align: left; font-weight: 600; color: var(--text-primary); border-bottom: 1px solid var(--border); min-width: 150px;">Account Name</th>
+                            <th style="padding: 12px 16px; text-align: left; font-weight: 600; color: var(--text-primary); border-bottom: 1px solid var(--border); min-width: 200px;">Address</th>
+                            <th style="padding: 12px 16px; text-align: right; font-weight: 600; color: var(--text-primary); border-bottom: 1px solid var(--border); white-space: nowrap;">Fee</th>
+                        </tr>
+                    </thead>
+                `;
+                
+                // Table body
+                html += `<tbody>`;
+                filteredRequests.forEach(req => {
+                    const date = new Date(req.completedDate);
+                    const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                    
+                    html += `
+                        <tr style="border-bottom: 1px solid var(--border);">
+                            <td style="padding: 12px 16px; color: var(--text-secondary); white-space: nowrap;">${formattedDate}</td>
+                            <td style="padding: 12px 16px; color: var(--text-primary); font-weight: 500;">${req.client}</td>
+                            <td style="padding: 12px 16px; color: var(--text-secondary);">${req.address}</td>
+                            <td style="padding: 12px 16px; color: var(--accent); font-weight: 600; text-align: right; white-space: nowrap;">$${req.fee.toFixed(2)}</td>
+                        </tr>
+                    `;
+                });
+                html += `</tbody>`;
+                
+                // Table footer with totals
+                html += `
+                    <tfoot>
+                        <tr style="background: var(--bg-secondary); font-weight: 600;">
+                            <td colspan="3" style="padding: 12px 16px; color: var(--text-primary); text-align: right;">Total:</td>
+                            <td style="padding: 12px 16px; color: var(--success); text-align: right; white-space: nowrap;">$${totalFees.toFixed(2)}</td>
+                        </tr>
+                    </tfoot>
+                `;
+                
+                html += `</table>`;
+                html += `</div>`;
+                html += `</div>`;
+            }
+            
+            resultsContainer.innerHTML = html;
+        }
     </script>
 </body>
 </html>
