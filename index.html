@@ -321,6 +321,41 @@
             color: var(--text-secondary);
         }
         
+        /* Organizer Buttons */
+        .organizer-btn {
+            flex: 1;
+            min-width: 70px;
+            padding: 8px 12px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .organizer-btn:hover {
+            border-color: var(--accent);
+            color: var(--text-primary);
+        }
+        
+        .organizer-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+        
+        /* Group Summary Card */
+        .group-summary {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-card) 100%);
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin: 12px 0 20px 0;
+            border: 1px solid var(--border);
+        }
+        
         /* Action Buttons Row */
         .action-row {
             display: flex;
@@ -714,11 +749,21 @@
             
             <!-- All Requests List View -->
             <div id="requestsView" class="hidden">
-                <!-- Status Toggle -->
-                <div class="card" style="padding: 8px; margin-bottom: 16px;">
+                <!-- Main Status Toggle -->
+                <div class="card" style="padding: 8px; margin-bottom: 12px;">
                     <div style="display: flex; gap: 8px;">
                         <button id="pendingToggle" class="btn" style="flex: 1; font-size: 14px; padding: 10px;" onclick="showRequestsFilter('pending')">Pending</button>
                         <button id="completedToggle" class="btn btn-outline" style="flex: 1; font-size: 14px; padding: 10px;" onclick="showRequestsFilter('completed')">Completed</button>
+                    </div>
+                </div>
+                
+                <!-- Completed View Organizer (only shows when Completed is selected) -->
+                <div id="completedOrganizer" class="hidden" style="margin-bottom: 16px;">
+                    <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                        <button id="monthlyBtn" class="organizer-btn active" onclick="setCompletedOrganizer('monthly')">Monthly</button>
+                        <button id="payPeriodBtn" class="organizer-btn" onclick="setCompletedOrganizer('payPeriod')">Pay Period</button>
+                        <button id="currentYearBtn" class="organizer-btn" onclick="setCompletedOrganizer('currentYear')">Current Year</button>
+                        <button id="allTimeBtn" class="organizer-btn" onclick="setCompletedOrganizer('allTime')">All Time</button>
                     </div>
                 </div>
                 
@@ -1134,6 +1179,7 @@
         ];
         
         let currentRequestsFilter = 'pending';
+        let currentCompletedOrganizer = 'monthly';
         
         function showRequestsFilter(filter) {
             currentRequestsFilter = filter;
@@ -1141,6 +1187,7 @@
             // Update toggle buttons
             const pendingBtn = document.getElementById('pendingToggle');
             const completedBtn = document.getElementById('completedToggle');
+            const organizerDiv = document.getElementById('completedOrganizer');
             
             if (filter === 'pending') {
                 pendingBtn.classList.remove('btn-outline');
@@ -1150,6 +1197,9 @@
                 
                 document.getElementById('pendingRequestsList').classList.remove('hidden');
                 document.getElementById('completedRequestsList').classList.add('hidden');
+                
+                // Hide organizer
+                if (organizerDiv) organizerDiv.classList.add('hidden');
             } else {
                 completedBtn.classList.remove('btn-outline');
                 completedBtn.classList.add('btn-primary');
@@ -1158,7 +1208,28 @@
                 
                 document.getElementById('completedRequestsList').classList.remove('hidden');
                 document.getElementById('pendingRequestsList').classList.add('hidden');
+                
+                // Show organizer
+                if (organizerDiv) organizerDiv.classList.remove('hidden');
+                
+                // Re-render with current organizer
+                renderCompletedRequests();
             }
+        }
+        
+        function setCompletedOrganizer(organizer) {
+            currentCompletedOrganizer = organizer;
+            
+            // Update button states
+            document.querySelectorAll('.organizer-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            const activeBtn = document.getElementById(organizer + 'Btn');
+            if (activeBtn) activeBtn.classList.add('active');
+            
+            // Re-render completed requests
+            renderCompletedRequests();
         }
         
         function renderPendingRequests() {
@@ -1205,60 +1276,175 @@
         
         function renderCompletedRequests() {
             const container = document.getElementById('completedRequestsList');
+            const organizer = currentCompletedOrganizer || 'monthly';
             
             // Sort by date descending (most recent first)
             const sorted = [...completedRequests].sort((a, b) => new Date(b.completedDate) - new Date(a.completedDate));
             
             let html = '';
-            let currentMonth = '';
             
-            sorted.forEach(req => {
-                const date = new Date(req.completedDate);
-                const monthYear = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-                const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            if (organizer === 'monthly') {
+                // Group by month
+                let currentMonth = '';
+                let monthCount = 0;
+                let monthTotal = 0;
+                let monthHtml = '';
                 
-                // Add month header if changed
-                if (monthYear !== currentMonth) {
-                    currentMonth = monthYear;
-                    html += `<div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin: 20px 0 12px 0; font-weight: 600;">${monthYear}</div>`;
+                sorted.forEach(req => {
+                    const date = new Date(req.completedDate);
+                    const monthYear = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                    const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                    
+                    // Add month header if changed
+                    if (monthYear !== currentMonth) {
+                        // Close previous month summary
+                        if (currentMonth !== '' && monthCount > 0) {
+                            html += `<div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin: 20px 0 12px 0; font-weight: 600;">${currentMonth}</div>`;
+                            html += monthHtml;
+                            html += createGroupSummary(monthCount, monthTotal);
+                        }
+                        
+                        currentMonth = monthYear;
+                        monthCount = 0;
+                        monthTotal = 0;
+                        monthHtml = '';
+                    }
+                    
+                    monthCount++;
+                    monthTotal += req.fee;
+                    
+                    monthHtml += createRequestCard(req, formattedDate);
+                });
+                
+                // Add final month
+                if (currentMonth !== '' && monthCount > 0) {
+                    html += `<div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin: 20px 0 12px 0; font-weight: 600;">${currentMonth}</div>`;
+                    html += monthHtml;
+                    html += createGroupSummary(monthCount, monthTotal);
                 }
                 
-                html += `
-                    <div class="request-item" onclick="viewCompletedRequest(${req.id})">
-                        <div class="request-header">
-                            <div class="request-client">${req.client}</div>
-                            <div class="request-fee">$${req.fee.toFixed(2)}</div>
-                        </div>
-                        <div class="request-address">📍 ${req.address}</div>
-                        <div class="request-meta">
-                            <div class="request-due">
-                                <span>✅</span>
-                                <span>Completed: ${formattedDate}</span>
+            } else if (organizer === 'payPeriod') {
+                // Group by pay period (1st-15th, 16th-end)
+                let currentPeriod = '';
+                let periodCount = 0;
+                let periodTotal = 0;
+                let periodHtml = '';
+                
+                sorted.forEach(req => {
+                    const date = new Date(req.completedDate);
+                    const day = date.getDate();
+                    const month = date.toLocaleDateString('en-US', { month: 'long' });
+                    const year = date.getFullYear();
+                    const periodLabel = day <= 15 ? '1st-15th' : '16th-End';
+                    const periodKey = `${month} ${year} - ${periodLabel}`;
+                    const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                    
+                    if (periodKey !== currentPeriod) {
+                        if (currentPeriod !== '' && periodCount > 0) {
+                            html += `<div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin: 20px 0 12px 0; font-weight: 600;">${currentPeriod}</div>`;
+                            html += periodHtml;
+                            html += createGroupSummary(periodCount, periodTotal);
+                        }
+                        
+                        currentPeriod = periodKey;
+                        periodCount = 0;
+                        periodTotal = 0;
+                        periodHtml = '';
+                    }
+                    
+                    periodCount++;
+                    periodTotal += req.fee;
+                    periodHtml += createRequestCard(req, formattedDate);
+                });
+                
+                if (currentPeriod !== '' && periodCount > 0) {
+                    html += `<div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin: 20px 0 12px 0; font-weight: 600;">${currentPeriod}</div>`;
+                    html += periodHtml;
+                    html += createGroupSummary(periodCount, periodTotal);
+                }
+                
+            } else if (organizer === 'currentYear') {
+                // Current year only (2025)
+                const currentYear = 2025;
+                const yearRequests = sorted.filter(req => new Date(req.completedDate).getFullYear() === currentYear);
+                const yearCount = yearRequests.length;
+                const yearTotal = yearRequests.reduce((sum, req) => sum + req.fee, 0);
+                
+                if (yearCount === 0) {
+                    html += `
+                        <div class="card">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">📅</div>
+                                <h3>No Completed Requests</h3>
+                                <p>No completed requests for ${currentYear}</p>
                             </div>
-                            <span class="request-status status-completed">Completed</span>
                         </div>
-                    </div>
-                `;
-            });
+                    `;
+                } else {
+                    html += `<div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin: 0 0 12px 0; font-weight: 600;">${currentYear}</div>`;
+                    
+                    yearRequests.forEach(req => {
+                        const date = new Date(req.completedDate);
+                        const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                        html += createRequestCard(req, formattedDate);
+                    });
+                    
+                    html += createGroupSummary(yearCount, yearTotal);
+                }
+                
+            } else if (organizer === 'allTime') {
+                // All completed requests as one group
+                const allCount = sorted.length;
+                const allTotal = sorted.reduce((sum, req) => sum + req.fee, 0);
+                
+                html += `<div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin: 0 0 12px 0; font-weight: 600;">All Completed Requests</div>`;
+                
+                sorted.forEach(req => {
+                    const date = new Date(req.completedDate);
+                    const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                    html += createRequestCard(req, formattedDate);
+                });
+                
+                html += createGroupSummary(allCount, allTotal);
+            }
             
-            // Add summary card
-            const totalEarned = completedRequests.reduce((sum, req) => sum + req.fee, 0);
-            html += `
-                <div class="card" style="margin-top: 20px; background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-card) 100%);">
+            container.innerHTML = html;
+        }
+        
+        function createRequestCard(req, formattedDate) {
+            return `
+                <div class="request-item" onclick="viewCompletedRequest(${req.id})">
+                    <div class="request-header">
+                        <div class="request-client">${req.client}</div>
+                        <div class="request-fee">$${req.fee.toFixed(2)}</div>
+                    </div>
+                    <div class="request-address">📍 ${req.address}</div>
+                    <div class="request-meta">
+                        <div class="request-due">
+                            <span>✅</span>
+                            <span>Completed: ${formattedDate}</span>
+                        </div>
+                        <span class="request-status status-completed">Completed</span>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function createGroupSummary(count, total) {
+            return `
+                <div class="group-summary">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
-                            <div style="font-size: 12px; color: var(--text-muted);">Total Completed</div>
-                            <div style="font-size: 20px; font-weight: 700; color: var(--text-primary);">${completedRequests.length} requests</div>
+                            <div style="font-size: 11px; color: var(--text-muted);">Completed</div>
+                            <div style="font-size: 18px; font-weight: 700; color: var(--text-primary);">${count}</div>
                         </div>
                         <div style="text-align: right;">
-                            <div style="font-size: 12px; color: var(--text-muted);">Total Earned</div>
-                            <div style="font-size: 24px; font-weight: 700; color: var(--success);">$${totalEarned.toLocaleString()}</div>
+                            <div style="font-size: 11px; color: var(--text-muted);">Earned</div>
+                            <div style="font-size: 22px; font-weight: 700; color: var(--success);">$${total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
                         </div>
                     </div>
                 </div>
             `;
-            
-            container.innerHTML = html;
         }
         
         function viewCompletedRequest(id) {
