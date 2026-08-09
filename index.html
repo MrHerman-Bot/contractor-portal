@@ -714,12 +714,22 @@
             
             <!-- All Requests List View -->
             <div id="requestsView" class="hidden">
-                <div class="card">
-                    <div class="empty-state">
-                        <div class="empty-state-icon">📋</div>
-                        <h3>All Requests</h3>
-                        <p>Full request list with filtering coming soon</p>
+                <!-- Status Toggle -->
+                <div class="card" style="padding: 8px; margin-bottom: 16px;">
+                    <div style="display: flex; gap: 8px;">
+                        <button id="pendingToggle" class="btn" style="flex: 1; font-size: 14px; padding: 10px;" onclick="showRequestsFilter('pending')">Pending</button>
+                        <button id="completedToggle" class="btn btn-outline" style="flex: 1; font-size: 14px; padding: 10px;" onclick="showRequestsFilter('completed')">Completed</button>
                     </div>
+                </div>
+                
+                <!-- Pending Requests List -->
+                <div id="pendingRequestsList">
+                    <!-- Populated by JavaScript -->
+                </div>
+                
+                <!-- Completed Requests List -->
+                <div id="completedRequestsList" class="hidden">
+                    <!-- Populated by JavaScript -->
                 </div>
             </div>
             
@@ -1037,7 +1047,236 @@
             closeDeclineModal();
         }
         
-        // Show/hide "Other" text box based on selection
+        // Mock data for requests
+        const pendingRequests = [
+            { id: 1, client: 'Johnson Residence', address: '1234 Peachtree Street, Atlanta, GA 30309', dueDate: 'Today', fee: 85.00, status: 'New' },
+            { id: 2, client: 'Smith Property LLC', address: '5678 Oak Drive, Charlotte, NC 28202', dueDate: 'Tomorrow', fee: 95.00, status: 'New' },
+            { id: 3, client: 'Williams Family Trust', address: '9012 Pine Lane, Birmingham, AL 35203', dueDate: 'Aug 3', fee: 75.00, status: 'Accepted' }
+        ];
+        
+        const completedRequests = [
+            // August 2025
+            { id: 101, client: 'Johnson Residence', address: '1234 Peachtree Street, Atlanta, GA 30309', completedDate: '2025-08-01', fee: 85.00 },
+            { id: 102, client: 'Martinez Construction', address: '789 Maple Ave, Savannah, GA 31401', completedDate: '2025-08-02', fee: 90.00 },
+            { id: 103, client: 'Thompson Development', address: '321 Birch Rd, Augusta, GA 30901', completedDate: '2025-08-03', fee: 80.00 },
+            { id: 104, client: 'Johnson Residence', address: '1234 Peachtree Street, Atlanta, GA 30309', completedDate: '2025-08-05', fee: 85.00 },
+            { id: 105, client: 'Coastal Properties', address: '555 Beach Blvd, Jacksonville, FL 32250', completedDate: '2025-08-06', fee: 95.00 },
+            
+            // July 2025
+            { id: 106, client: 'Smith Property LLC', address: '5678 Oak Drive, Charlotte, NC 28202', completedDate: '2025-07-02', fee: 95.00 },
+            { id: 107, client: 'Green Valley Homes', address: '888 Valley View, Columbia, SC 29201', completedDate: '2025-07-08', fee: 88.00 },
+            { id: 108, client: 'Johnson Residence', address: '1234 Peachtree Street, Atlanta, GA 30309', completedDate: '2025-07-15', fee: 85.00 },
+            { id: 109, client: 'Mountain View Estates', address: '444 Summit Dr, Asheville, NC 28801', completedDate: '2025-07-22', fee: 92.00 },
+            { id: 110, client: 'Riverfront Builders', address: '777 River Rd, Charleston, SC 29401', completedDate: '2025-07-28', fee: 100.00 },
+            
+            // June 2025
+            { id: 111, client: 'Williams Family Trust', address: '9012 Pine Lane, Birmingham, AL 35203', completedDate: '2025-06-03', fee: 75.00 },
+            { id: 112, client: 'Parkside Development', address: '222 Park Ave, Nashville, TN 37201', completedDate: '2025-06-10', fee: 87.00 },
+            { id: 113, client: 'Lakeside Properties', address: '333 Lake Shore, Knoxville, TN 37901', completedDate: '2025-06-18', fee: 83.00 },
+            { id: 114, client: 'Smith Property LLC', address: '5678 Oak Drive, Charlotte, NC 28202', completedDate: '2025-06-24', fee: 95.00 },
+            { id: 115, client: 'Highland Construction', address: '999 Highland, Chattanooga, TN 37401', completedDate: '2025-06-30', fee: 91.00 },
+            
+            // May 2025
+            { id: 116, client: 'Johnson Residence', address: '1234 Peachtree Street, Atlanta, GA 30309', completedDate: '2025-05-05', fee: 85.00 },
+            { id: 117, client: 'Metro Builders Inc', address: '111 Metro Blvd, Raleigh, NC 27601', completedDate: '2025-05-12', fee: 89.00 },
+            { id: 118, client: 'Williams Family Trust', address: '9012 Pine Lane, Birmingham, AL 35203', completedDate: '2025-05-19', fee: 75.00 },
+            { id: 119, client: 'Coastal Properties', address: '555 Beach Blvd, Jacksonville, FL 32250', completedDate: '2025-05-25', fee: 95.00 },
+            { id: 120, client: 'Southern Development', address: '666 South St, Mobile, AL 36601', completedDate: '2025-05-29', fee: 82.00 },
+            
+            // April 2025
+            { id: 121, client: 'Smith Property LLC', address: '5678 Oak Drive, Charlotte, NC 28202', completedDate: '2025-04-04', fee: 95.00 },
+            { id: 122, client: 'Johnson Residence', address: '1234 Peachtree Street, Atlanta, GA 30309', completedDate: '2025-04-11', fee: 85.00 },
+            { id: 123, client: 'Green Valley Homes', address: '888 Valley View, Columbia, SC 29201', completedDate: '2025-04-18', fee: 88.00 },
+            { id: 124, client: 'Martinez Construction', address: '789 Maple Ave, Savannah, GA 31401', completedDate: '2025-04-24', fee: 90.00 },
+            { id: 125, client: 'Williams Family Trust', address: '9012 Pine Lane, Birmingham, AL 35203', completedDate: '2025-04-29', fee: 75.00 },
+            
+            // March 2025
+            { id: 126, client: 'Thompson Development', address: '321 Birch Rd, Augusta, GA 30901', completedDate: '2025-03-06', fee: 80.00 },
+            { id: 127, client: 'Riverfront Builders', address: '777 River Rd, Charleston, SC 29401', completedDate: '2025-03-13', fee: 100.00 },
+            { id: 128, client: 'Johnson Residence', address: '1234 Peachtree Street, Atlanta, GA 30309', completedDate: '2025-03-20', fee: 85.00 },
+            { id: 129, client: 'Mountain View Estates', address: '444 Summit Dr, Asheville, NC 28801', completedDate: '2025-03-27', fee: 92.00 },
+            { id: 130, client: 'Coastal Properties', address: '555 Beach Blvd, Jacksonville, FL 32250', completedDate: '2025-03-31', fee: 95.00 },
+            
+            // February 2025
+            { id: 131, client: 'Smith Property LLC', address: '5678 Oak Drive, Charlotte, NC 28202', completedDate: '2025-02-05', fee: 95.00 },
+            { id: 132, client: 'Parkside Development', address: '222 Park Ave, Nashville, TN 37201', completedDate: '2025-02-12', fee: 87.00 },
+            { id: 133, client: 'Williams Family Trust', address: '9012 Pine Lane, Birmingham, AL 35203', completedDate: '2025-02-19', fee: 75.00 },
+            { id: 134, client: 'Highland Construction', address: '999 Highland, Chattanooga, TN 37401', completedDate: '2025-02-24', fee: 91.00 },
+            { id: 135, client: 'Johnson Residence', address: '1234 Peachtree Street, Atlanta, GA 30309', completedDate: '2025-02-28', fee: 85.00 },
+            
+            // January 2025
+            { id: 136, client: 'Martinez Construction', address: '789 Maple Ave, Savannah, GA 31401', completedDate: '2025-01-07', fee: 90.00 },
+            { id: 137, client: 'Green Valley Homes', address: '888 Valley View, Columbia, SC 29201', completedDate: '2025-01-14', fee: 88.00 },
+            { id: 138, client: 'Thompson Development', address: '321 Birch Rd, Augusta, GA 30901', completedDate: '2025-01-21', fee: 80.00 },
+            { id: 139, client: 'Smith Property LLC', address: '5678 Oak Drive, Charlotte, NC 28202', completedDate: '2025-01-27', fee: 95.00 },
+            { id: 140, client: 'Riverfront Builders', address: '777 River Rd, Charleston, SC 29401', completedDate: '2025-01-30', fee: 100.00 },
+            
+            // December 2024
+            { id: 141, client: 'Williams Family Trust', address: '9012 Pine Lane, Birmingham, AL 35203', completedDate: '2024-12-04', fee: 75.00 },
+            { id: 142, client: 'Johnson Residence', address: '1234 Peachtree Street, Atlanta, GA 30309', completedDate: '2024-12-11', fee: 85.00 },
+            { id: 143, client: 'Coastal Properties', address: '555 Beach Blvd, Jacksonville, FL 32250', completedDate: '2024-12-18', fee: 95.00 },
+            { id: 144, client: 'Mountain View Estates', address: '444 Summit Dr, Asheville, NC 28801', completedDate: '2024-12-23', fee: 92.00 },
+            { id: 145, client: 'Parkside Development', address: '222 Park Ave, Nashville, TN 37201', completedDate: '2024-12-30', fee: 87.00 },
+            
+            // November 2024
+            { id: 146, client: 'Smith Property LLC', address: '5678 Oak Drive, Charlotte, NC 28202', completedDate: '2024-11-05', fee: 95.00 },
+            { id: 147, client: 'Lakeside Properties', address: '333 Lake Shore, Knoxville, TN 37901', completedDate: '2024-11-12', fee: 83.00 },
+            { id: 148, client: 'Martinez Construction', address: '789 Maple Ave, Savannah, GA 31401', completedDate: '2024-11-19', fee: 90.00 },
+            { id: 149, client: 'Williams Family Trust', address: '9012 Pine Lane, Birmingham, AL 35203', completedDate: '2024-11-25', fee: 75.00 },
+            { id: 150, client: 'Johnson Residence', address: '1234 Peachtree Street, Atlanta, GA 30309', completedDate: '2024-11-29', fee: 85.00 },
+            
+            // October 2024
+            { id: 151, client: 'Thompson Development', address: '321 Birch Rd, Augusta, GA 30901', completedDate: '2024-10-03', fee: 80.00 },
+            { id: 152, client: 'Highland Construction', address: '999 Highland, Chattanooga, TN 37401', completedDate: '2024-10-10', fee: 91.00 },
+            { id: 153, client: 'Green Valley Homes', address: '888 Valley View, Columbia, SC 29201', completedDate: '2024-10-17', fee: 88.00 },
+            { id: 154, client: 'Smith Property LLC', address: '5678 Oak Drive, Charlotte, NC 28202', completedDate: '2024-10-24', fee: 95.00 },
+            { id: 155, client: 'Riverfront Builders', address: '777 River Rd, Charleston, SC 29401', completedDate: '2024-10-31', fee: 100.00 }
+        ];
+        
+        let currentRequestsFilter = 'pending';
+        
+        function showRequestsFilter(filter) {
+            currentRequestsFilter = filter;
+            
+            // Update toggle buttons
+            const pendingBtn = document.getElementById('pendingToggle');
+            const completedBtn = document.getElementById('completedToggle');
+            
+            if (filter === 'pending') {
+                pendingBtn.classList.remove('btn-outline');
+                pendingBtn.classList.add('btn-primary');
+                completedBtn.classList.add('btn-outline');
+                completedBtn.classList.remove('btn-primary');
+                
+                document.getElementById('pendingRequestsList').classList.remove('hidden');
+                document.getElementById('completedRequestsList').classList.add('hidden');
+            } else {
+                completedBtn.classList.remove('btn-outline');
+                completedBtn.classList.add('btn-primary');
+                pendingBtn.classList.add('btn-outline');
+                pendingBtn.classList.remove('btn-primary');
+                
+                document.getElementById('completedRequestsList').classList.remove('hidden');
+                document.getElementById('pendingRequestsList').classList.add('hidden');
+            }
+        }
+        
+        function renderPendingRequests() {
+            const container = document.getElementById('pendingRequestsList');
+            
+            if (pendingRequests.length === 0) {
+                container.innerHTML = `
+                    <div class="card">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">🎉</div>
+                            <h3>No Pending Requests</h3>
+                            <p>You're all caught up!</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            pendingRequests.forEach(req => {
+                const statusClass = req.status === 'New' ? 'status-new' : 'status-accepted';
+                const isUrgent = req.dueDate === 'Today';
+                
+                html += `
+                    <div class="request-item" onclick="viewRequest(${req.id})">
+                        <div class="request-header">
+                            <div class="request-client">${req.client}</div>
+                            <div class="request-fee">$${req.fee.toFixed(2)}</div>
+                        </div>
+                        <div class="request-address">📍 ${req.address}</div>
+                        <div class="request-meta">
+                            <div class="request-due ${isUrgent ? 'urgent' : ''}">
+                                <span>${isUrgent ? '⏰' : '📅'}</span>
+                                <span>Due: ${req.dueDate}</span>
+                            </div>
+                            <span class="request-status ${statusClass}">${req.status}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        function renderCompletedRequests() {
+            const container = document.getElementById('completedRequestsList');
+            
+            // Sort by date descending (most recent first)
+            const sorted = [...completedRequests].sort((a, b) => new Date(b.completedDate) - new Date(a.completedDate));
+            
+            let html = '';
+            let currentMonth = '';
+            
+            sorted.forEach(req => {
+                const date = new Date(req.completedDate);
+                const monthYear = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                
+                // Add month header if changed
+                if (monthYear !== currentMonth) {
+                    currentMonth = monthYear;
+                    html += `<div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin: 20px 0 12px 0; font-weight: 600;">${monthYear}</div>`;
+                }
+                
+                html += `
+                    <div class="request-item" onclick="viewCompletedRequest(${req.id})">
+                        <div class="request-header">
+                            <div class="request-client">${req.client}</div>
+                            <div class="request-fee">$${req.fee.toFixed(2)}</div>
+                        </div>
+                        <div class="request-address">📍 ${req.address}</div>
+                        <div class="request-meta">
+                            <div class="request-due">
+                                <span>✅</span>
+                                <span>Completed: ${formattedDate}</span>
+                            </div>
+                            <span class="request-status status-completed">Completed</span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            // Add summary card
+            const totalEarned = completedRequests.reduce((sum, req) => sum + req.fee, 0);
+            html += `
+                <div class="card" style="margin-top: 20px; background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-card) 100%);">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-size: 12px; color: var(--text-muted);">Total Completed</div>
+                            <div style="font-size: 20px; font-weight: 700; color: var(--text-primary);">${completedRequests.length} requests</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 12px; color: var(--text-muted);">Total Earned</div>
+                            <div style="font-size: 24px; font-weight: 700; color: var(--success);">$${totalEarned.toLocaleString()}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+        }
+        
+        function viewCompletedRequest(id) {
+            alert('View completed request details for ID: ' + id + '\n\n(This would show the full inspection report)');
+        }
+        
+        // Initialize requests lists when showing requests view
+        const originalShowView = showView;
+        showView = function(viewName) {
+            originalShowView(viewName);
+            if (viewName === 'requests') {
+                renderPendingRequests();
+                renderCompletedRequests();
+                showRequestsFilter('pending');
+            }
+        };
+        
+        // Show/hide "Other" text box based on selection (for decline modal)
         document.querySelectorAll('input[name="declineReason"]').forEach(radio => {
             radio.addEventListener('change', function() {
                 const otherContainer = document.getElementById('otherTextContainer');
