@@ -301,6 +301,21 @@
             color: var(--danger);
         }
         
+        /* Contact Method Buttons */
+        .contact-method-btn {
+            transition: all 0.2s ease;
+        }
+        
+        .contact-method-btn:hover {
+            opacity: 0.9;
+        }
+        
+        .contact-method-btn.active {
+            background: var(--accent) !important;
+            border-color: var(--accent) !important;
+            color: white !important;
+        }
+        
         .request-status {
             display: inline-flex;
             align-items: center;
@@ -692,10 +707,11 @@
                     <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 16px;">Take photos of the property inspection:</p>
                     
                     <!-- Use Camera Button -->
-                    <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;" onchange="handlePhotoCapture(event)">
+                    <input type="file" id="cameraInput" accept="image/*" capture="environment" multiple style="display: none;" onchange="handlePhotoCapture(event)">
                     <button class="btn btn-primary" onclick="document.getElementById('cameraInput').click()" style="width: 100%; margin-bottom: 16px;">
                         📷 Use Camera
                     </button>
+                    <p style="font-size: 11px; color: var(--text-muted); text-align: center; margin-bottom: 16px;">You can select multiple photos at once</p>
                     
                     <!-- Photo Gallery -->
                     <div id="photoGallery" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px;">
@@ -1004,21 +1020,74 @@
         }
         
         function handlePhotoCapture(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    capturedPhotos.push({
-                        id: Date.now(),
-                        src: e.target.result,
-                        rotation: 0
-                    });
-                    renderPhotoGallery();
-                };
-                reader.readAsDataURL(file);
+            const files = event.target.files;
+            if (files && files.length > 0) {
+                let processedCount = 0;
+                
+                Array.from(files).forEach((file, index) => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        capturedPhotos.push({
+                            id: Date.now() + index,
+                            src: e.target.result,
+                            rotation: 0
+                        });
+                        processedCount++;
+                        
+                        // Only render gallery after all files are processed
+                        if (processedCount === files.length) {
+                            renderPhotoGallery();
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                });
             }
-            // Reset input so same photo can be selected again if needed
+            // Reset input so same photos can be selected again if needed
             event.target.value = '';
+        }
+        
+        // Contact method button handler - defined once at startup
+        function initializeContactMethodButtons() {
+            document.querySelectorAll('.contact-method-btn').forEach(btn => {
+                // Skip if already initialized
+                if (btn.dataset.initialized === 'true') return;
+                
+                btn.dataset.initialized = 'true';
+                
+                btn.addEventListener('click', function() {
+                    const allButtons = document.querySelectorAll('.contact-method-btn');
+                    
+                    // Remove active class from all buttons
+                    allButtons.forEach(b => {
+                        b.style.background = 'var(--bg-secondary)';
+                        b.style.borderColor = 'var(--border)';
+                        b.style.color = 'var(--text-primary)';
+                        b.classList.remove('active');
+                    });
+                    
+                    // Add active style to clicked button
+                    this.style.background = 'var(--accent)';
+                    this.style.borderColor = 'var(--accent)';
+                    this.style.color = '#fff';
+                    this.classList.add('active');
+                    
+                    // Set hidden input value
+                    document.getElementById('selectedContactMethod').value = this.dataset.method;
+                    
+                    // Show/hide date/time based on method
+                    const method = this.dataset.method;
+                    const dateTimeSection = document.getElementById('scheduleDateTime');
+                    
+                    if (method === 'Phone Call' || method === 'Text Message') {
+                        dateTimeSection.classList.remove('hidden');
+                    } else {
+                        dateTimeSection.classList.add('hidden');
+                        // Clear date/time fields
+                        document.getElementById('scheduledDate').value = '';
+                        document.getElementById('scheduledTime').value = '';
+                    }
+                });
+            });
         }
         
         function renderPhotoGallery() {
@@ -1169,7 +1238,7 @@
             populateDrawPercentages('draw3Percent', 0);
             
             // Setup contact method buttons
-            setupContactMethodButtons();
+            initializeContactMethodButtons();
         }
         
         function populateDrawPercentages(selectId, minimumPercent) {
@@ -1186,41 +1255,6 @@
                 option.textContent = i + '%';
                 select.appendChild(option);
             }
-        }
-        
-        function setupContactMethodButtons() {
-            const buttons = document.querySelectorAll('.contact-method-btn');
-            buttons.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    // Remove active class from all buttons
-                    buttons.forEach(b => {
-                        b.style.background = 'var(--bg-secondary)';
-                        b.style.borderColor = 'var(--border)';
-                        b.style.color = 'var(--text-primary)';
-                    });
-                    
-                    // Add active style to clicked button
-                    this.style.background = 'var(--accent)';
-                    this.style.borderColor = 'var(--accent)';
-                    this.style.color = '#fff';
-                    
-                    // Set hidden input value
-                    document.getElementById('selectedContactMethod').value = this.dataset.method;
-                    
-                    // Show/hide date/time based on method
-                    const method = this.dataset.method;
-                    const dateTimeSection = document.getElementById('scheduleDateTime');
-                    
-                    if (method === 'Phone Call' || method === 'Text Message') {
-                        dateTimeSection.classList.remove('hidden');
-                    } else {
-                        dateTimeSection.classList.add('hidden');
-                        // Clear date/time fields
-                        document.getElementById('scheduledDate').value = '';
-                        document.getElementById('scheduledTime').value = '';
-                    }
-                });
-            });
         }
         
         function submitSchedule() {
@@ -2025,6 +2059,11 @@
             
             resultsContainer.innerHTML = html;
         }
+        
+        // Initialize contact method buttons when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeContactMethodButtons();
+        });
     </script>
 </body>
 </html>
