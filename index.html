@@ -1115,86 +1115,86 @@
         const pendingRequests = [
             { id: 1, client: 'Johnson Residence', address: '1234 Peachtree Street, Atlanta, GA 30309', dueDate: 'Today', fee: 85.00, status: 'New' },
             { id: 2, client: 'Smith Property LLC', address: '5678 Oak Drive, Charlotte, NC 28202', dueDate: 'Tomorrow', fee: 95.00, status: 'New' },
-            { id: 3, client: 'Williams Family Trust', address: '9012 Pine Lane, Birmingham, AL 35203', dueDate: 'Aug 3', fee: 75.00, status: 'Accepted' }
+            { id: 3, client: 'Williams Family Trust', address: '9012 Pine Lane, Birmingham, AL 35203', dueDate: 'Aug 12', fee: 75.00, status: 'Accepted' }
         ];
         
         const completedRequests = [
-            // August 2025
-            { id: 101, client: 'Johnson Residence', address: '1234 Peachtree Street, Atlanta, GA 30309', completedDate: '2025-08-01', fee: 85.00 },
-            { id: 102, client: 'Martinez Construction', address: '789 Maple Ave, Savannah, GA 31401', completedDate: '2025-08-02', fee: 90.00 },
-            { id: 103, client: 'Thompson Development', address: '321 Birch Rd, Augusta, GA 30901', completedDate: '2025-08-03', fee: 80.00 },
-            { id: 104, client: 'Johnson Residence', address: '1234 Peachtree Street, Atlanta, GA 30309', completedDate: '2025-08-05', fee: 85.00 },
-            { id: 105, client: 'Coastal Properties', address: '555 Beach Blvd, Jacksonville, FL 32250', completedDate: '2025-08-06', fee: 95.00 },
+            // August 2026
+            { id: 101, client: 'Johnson Residence', address: '1234 Peachtree Street, Atlanta, GA 30309', completedDate: '2026-08-01', fee: 85.00 },
+            { id: 102, client: 'Martinez Construction', address: '789 Maple Ave, Savannah, GA 31401', completedDate: '2026-08-02', fee: 90.00 },
+            { id: 103, client: 'Thompson Development', address: '321 Birch Rd, Augusta, GA 30901', completedDate: '2026-08-03', fee: 80.00 },
+            { id: 104, client: 'Johnson Residence', address: '1234 Peachtree Street, Atlanta, GA 30309', completedDate: '2026-08-05', fee: 85.00 },
+            { id: 105, client: 'Coastal Properties', address: '555 Beach Blvd, Jacksonville, FL 32250', completedDate: '2026-08-06', fee: 95.00 },
             
-            // July 2025
-            { id: 106, client: 'Smith Property LLC', address: '5678 Oak Drive, Charlotte, NC 28202', completedDate: '2025-07-02', fee: 95.00 },
-            { id: 107, client: 'Green Valley Homes', address: '888 Valley View, Columbia, SC 29201', completedDate: '2025-07-08', fee: 88.00 },
-            { id: 108, client: 'Johnson Residence', address: '1234 Peachtree Street, Atlanta, GA 30309', completedDate: '2025-07-15', fee: 85.00 },
-            { id: 109, client: 'Mountain View Estates', address: '444 Summit Dr, Asheville, NC 28801', completedDate: '2025-07-22', fee: 92.00 },
-            { id: 110, client: 'Riverfront Builders', address: '777 River Rd, Charleston, SC 29401', completedDate: '2025-07-28', fee: 100.00 },
+            // July 2026
+            { id: 106, client: 'Smith Property LLC', address: '5678 Oak Drive, Charlotte, NC 28202', completedDate: '2026-07-02', fee: 95.00 },
+            { id: 107, client: 'Green Valley Homes', address: '888 Valley View, Columbia, SC 29201', completedDate: '2026-07-08', fee: 88.00 },
+            { id: 108, client: 'Johnson Residence', address: '1234 Peachtree Street, Atlanta, GA 30309', completedDate: '2026-07-15', fee: 85.00 },
+            { id: 109, client: 'Mountain View Estates', address: '444 Summit Dr, Asheville, NC 28801', completedDate: '2026-07-22', fee: 92.00 },
+            { id: 110, client: 'Riverfront Builders', address: '777 River Rd, Charleston, SC 29401', completedDate: '2026-07-28', fee: 100.00 },
             
-            // June 2025
-            { id: 111, client: 'Williams Family Trust', address: '9012 Pine Lane, Birmingham, AL 35203', completedDate: '2025-06-03', fee: 75.00 },
-            { id: 112, client: 'Parkside Development', address: '222 Park Ave, Nashville, TN 37201', completedDate: '2025-06-10', fee: 87.00 },
-            { id: 113, client: 'Lakeside Properties', address: '333 Lake Shore, Knoxville, TN 37901', completedDate: '2025-06-18', fee: 83.00 },
-            { id: 114, client: 'Smith Property LLC', address: '5678 Oak Drive, Charlotte, NC 28202', completedDate: '2025-06-24', fee: 95.00 },
-            { id: 115, client: 'Highland Construction', address: '999 Highland, Chattanooga, TN 37401', completedDate: '2025-06-30', fee: 91.00 },
+            // June 2026
+            { id: 111, client: 'Williams Family Trust', address: '9012 Pine Lane, Birmingham, AL 35203', completedDate: '2026-06-03', fee: 75.00 },
+            { id: 112, client: 'Parkside Development', address: '222 Park Ave, Nashville, TN 37201', completedDate: '2026-06-10', fee: 87.00 },
+            { id: 113, client: 'Lakeside Properties', address: '333 Lake Shore, Knoxville, TN 37901', completedDate: '2026-06-18', fee: 83.00 },
+            { id: 114, client: 'Smith Property LLC', address: '5678 Oak Drive, Charlotte, NC 28202', completedDate: '2026-06-24', fee: 95.00 },
+            { id: 115, client: 'Highland Construction', address: '999 Highland, Chattanooga, TN 37401', completedDate: '2026-06-30', fee: 91.00 },
             
-            // May 2025
-            { id: 116, client: 'Johnson Residence', address: '1234 Peachtree Street, Atlanta, GA 30309', completedDate: '2025-05-05', fee: 85.00 },
-            { id: 117, client: 'Metro Builders Inc', address: '111 Metro Blvd, Raleigh, NC 27601', completedDate: '2025-05-12', fee: 89.00 },
-            { id: 118, client: 'Williams Family Trust', address: '9012 Pine Lane, Birmingham, AL 35203', completedDate: '2025-05-19', fee: 75.00 },
-            { id: 119, client: 'Coastal Properties', address: '555 Beach Blvd, Jacksonville, FL 32250', completedDate: '2025-05-25', fee: 95.00 },
-            { id: 120, client: 'Southern Development', address: '666 South St, Mobile, AL 36601', completedDate: '2025-05-29', fee: 82.00 },
+            // May 2026
+            { id: 116, client: 'Johnson Residence', address: '1234 Peachtree Street, Atlanta, GA 30309', completedDate: '2026-05-05', fee: 85.00 },
+            { id: 117, client: 'Metro Builders Inc', address: '111 Metro Blvd, Raleigh, NC 27601', completedDate: '2026-05-12', fee: 89.00 },
+            { id: 118, client: 'Williams Family Trust', address: '9012 Pine Lane, Birmingham, AL 35203', completedDate: '2026-05-19', fee: 75.00 },
+            { id: 119, client: 'Coastal Properties', address: '555 Beach Blvd, Jacksonville, FL 32250', completedDate: '2026-05-25', fee: 95.00 },
+            { id: 120, client: 'Southern Development', address: '666 South St, Mobile, AL 36601', completedDate: '2026-05-29', fee: 82.00 },
             
-            // April 2025
-            { id: 121, client: 'Smith Property LLC', address: '5678 Oak Drive, Charlotte, NC 28202', completedDate: '2025-04-04', fee: 95.00 },
-            { id: 122, client: 'Johnson Residence', address: '1234 Peachtree Street, Atlanta, GA 30309', completedDate: '2025-04-11', fee: 85.00 },
-            { id: 123, client: 'Green Valley Homes', address: '888 Valley View, Columbia, SC 29201', completedDate: '2025-04-18', fee: 88.00 },
-            { id: 124, client: 'Martinez Construction', address: '789 Maple Ave, Savannah, GA 31401', completedDate: '2025-04-24', fee: 90.00 },
-            { id: 125, client: 'Williams Family Trust', address: '9012 Pine Lane, Birmingham, AL 35203', completedDate: '2025-04-29', fee: 75.00 },
+            // April 2026
+            { id: 121, client: 'Smith Property LLC', address: '5678 Oak Drive, Charlotte, NC 28202', completedDate: '2026-04-04', fee: 95.00 },
+            { id: 122, client: 'Johnson Residence', address: '1234 Peachtree Street, Atlanta, GA 30309', completedDate: '2026-04-11', fee: 85.00 },
+            { id: 123, client: 'Green Valley Homes', address: '888 Valley View, Columbia, SC 29201', completedDate: '2026-04-18', fee: 88.00 },
+            { id: 124, client: 'Martinez Construction', address: '789 Maple Ave, Savannah, GA 31401', completedDate: '2026-04-24', fee: 90.00 },
+            { id: 125, client: 'Williams Family Trust', address: '9012 Pine Lane, Birmingham, AL 35203', completedDate: '2026-04-29', fee: 75.00 },
             
-            // March 2025
-            { id: 126, client: 'Thompson Development', address: '321 Birch Rd, Augusta, GA 30901', completedDate: '2025-03-06', fee: 80.00 },
-            { id: 127, client: 'Riverfront Builders', address: '777 River Rd, Charleston, SC 29401', completedDate: '2025-03-13', fee: 100.00 },
-            { id: 128, client: 'Johnson Residence', address: '1234 Peachtree Street, Atlanta, GA 30309', completedDate: '2025-03-20', fee: 85.00 },
-            { id: 129, client: 'Mountain View Estates', address: '444 Summit Dr, Asheville, NC 28801', completedDate: '2025-03-27', fee: 92.00 },
-            { id: 130, client: 'Coastal Properties', address: '555 Beach Blvd, Jacksonville, FL 32250', completedDate: '2025-03-31', fee: 95.00 },
+            // March 2026
+            { id: 126, client: 'Thompson Development', address: '321 Birch Rd, Augusta, GA 30901', completedDate: '2026-03-06', fee: 80.00 },
+            { id: 127, client: 'Riverfront Builders', address: '777 River Rd, Charleston, SC 29401', completedDate: '2026-03-13', fee: 100.00 },
+            { id: 128, client: 'Johnson Residence', address: '1234 Peachtree Street, Atlanta, GA 30309', completedDate: '2026-03-20', fee: 85.00 },
+            { id: 129, client: 'Mountain View Estates', address: '444 Summit Dr, Asheville, NC 28801', completedDate: '2026-03-27', fee: 92.00 },
+            { id: 130, client: 'Coastal Properties', address: '555 Beach Blvd, Jacksonville, FL 32250', completedDate: '2026-03-31', fee: 95.00 },
             
-            // February 2025
-            { id: 131, client: 'Smith Property LLC', address: '5678 Oak Drive, Charlotte, NC 28202', completedDate: '2025-02-05', fee: 95.00 },
-            { id: 132, client: 'Parkside Development', address: '222 Park Ave, Nashville, TN 37201', completedDate: '2025-02-12', fee: 87.00 },
-            { id: 133, client: 'Williams Family Trust', address: '9012 Pine Lane, Birmingham, AL 35203', completedDate: '2025-02-19', fee: 75.00 },
-            { id: 134, client: 'Highland Construction', address: '999 Highland, Chattanooga, TN 37401', completedDate: '2025-02-24', fee: 91.00 },
-            { id: 135, client: 'Johnson Residence', address: '1234 Peachtree Street, Atlanta, GA 30309', completedDate: '2025-02-28', fee: 85.00 },
+            // February 2026
+            { id: 131, client: 'Smith Property LLC', address: '5678 Oak Drive, Charlotte, NC 28202', completedDate: '2026-02-05', fee: 95.00 },
+            { id: 132, client: 'Parkside Development', address: '222 Park Ave, Nashville, TN 37201', completedDate: '2026-02-12', fee: 87.00 },
+            { id: 133, client: 'Williams Family Trust', address: '9012 Pine Lane, Birmingham, AL 35203', completedDate: '2026-02-19', fee: 75.00 },
+            { id: 134, client: 'Highland Construction', address: '999 Highland, Chattanooga, TN 37401', completedDate: '2026-02-24', fee: 91.00 },
+            { id: 135, client: 'Johnson Residence', address: '1234 Peachtree Street, Atlanta, GA 30309', completedDate: '2026-02-28', fee: 85.00 },
             
-            // January 2025
-            { id: 136, client: 'Martinez Construction', address: '789 Maple Ave, Savannah, GA 31401', completedDate: '2025-01-07', fee: 90.00 },
-            { id: 137, client: 'Green Valley Homes', address: '888 Valley View, Columbia, SC 29201', completedDate: '2025-01-14', fee: 88.00 },
-            { id: 138, client: 'Thompson Development', address: '321 Birch Rd, Augusta, GA 30901', completedDate: '2025-01-21', fee: 80.00 },
-            { id: 139, client: 'Smith Property LLC', address: '5678 Oak Drive, Charlotte, NC 28202', completedDate: '2025-01-27', fee: 95.00 },
-            { id: 140, client: 'Riverfront Builders', address: '777 River Rd, Charleston, SC 29401', completedDate: '2025-01-30', fee: 100.00 },
+            // January 2026
+            { id: 136, client: 'Martinez Construction', address: '789 Maple Ave, Savannah, GA 31401', completedDate: '2026-01-07', fee: 90.00 },
+            { id: 137, client: 'Green Valley Homes', address: '888 Valley View, Columbia, SC 29201', completedDate: '2026-01-14', fee: 88.00 },
+            { id: 138, client: 'Thompson Development', address: '321 Birch Rd, Augusta, GA 30901', completedDate: '2026-01-21', fee: 80.00 },
+            { id: 139, client: 'Smith Property LLC', address: '5678 Oak Drive, Charlotte, NC 28202', completedDate: '2026-01-27', fee: 95.00 },
+            { id: 140, client: 'Riverfront Builders', address: '777 River Rd, Charleston, SC 29401', completedDate: '2026-01-30', fee: 100.00 },
             
-            // December 2024
-            { id: 141, client: 'Williams Family Trust', address: '9012 Pine Lane, Birmingham, AL 35203', completedDate: '2024-12-04', fee: 75.00 },
-            { id: 142, client: 'Johnson Residence', address: '1234 Peachtree Street, Atlanta, GA 30309', completedDate: '2024-12-11', fee: 85.00 },
-            { id: 143, client: 'Coastal Properties', address: '555 Beach Blvd, Jacksonville, FL 32250', completedDate: '2024-12-18', fee: 95.00 },
-            { id: 144, client: 'Mountain View Estates', address: '444 Summit Dr, Asheville, NC 28801', completedDate: '2024-12-23', fee: 92.00 },
-            { id: 145, client: 'Parkside Development', address: '222 Park Ave, Nashville, TN 37201', completedDate: '2024-12-30', fee: 87.00 },
+            // December 2025
+            { id: 141, client: 'Williams Family Trust', address: '9012 Pine Lane, Birmingham, AL 35203', completedDate: '2025-12-04', fee: 75.00 },
+            { id: 142, client: 'Johnson Residence', address: '1234 Peachtree Street, Atlanta, GA 30309', completedDate: '2025-12-11', fee: 85.00 },
+            { id: 143, client: 'Coastal Properties', address: '555 Beach Blvd, Jacksonville, FL 32250', completedDate: '2025-12-18', fee: 95.00 },
+            { id: 144, client: 'Mountain View Estates', address: '444 Summit Dr, Asheville, NC 28801', completedDate: '2025-12-23', fee: 92.00 },
+            { id: 145, client: 'Parkside Development', address: '222 Park Ave, Nashville, TN 37201', completedDate: '2025-12-30', fee: 87.00 },
             
-            // November 2024
-            { id: 146, client: 'Smith Property LLC', address: '5678 Oak Drive, Charlotte, NC 28202', completedDate: '2024-11-05', fee: 95.00 },
-            { id: 147, client: 'Lakeside Properties', address: '333 Lake Shore, Knoxville, TN 37901', completedDate: '2024-11-12', fee: 83.00 },
-            { id: 148, client: 'Martinez Construction', address: '789 Maple Ave, Savannah, GA 31401', completedDate: '2024-11-19', fee: 90.00 },
-            { id: 149, client: 'Williams Family Trust', address: '9012 Pine Lane, Birmingham, AL 35203', completedDate: '2024-11-25', fee: 75.00 },
-            { id: 150, client: 'Johnson Residence', address: '1234 Peachtree Street, Atlanta, GA 30309', completedDate: '2024-11-29', fee: 85.00 },
+            // November 2025
+            { id: 146, client: 'Smith Property LLC', address: '5678 Oak Drive, Charlotte, NC 28202', completedDate: '2025-11-05', fee: 95.00 },
+            { id: 147, client: 'Lakeside Properties', address: '333 Lake Shore, Knoxville, TN 37901', completedDate: '2025-11-12', fee: 83.00 },
+            { id: 148, client: 'Martinez Construction', address: '789 Maple Ave, Savannah, GA 31401', completedDate: '2025-11-19', fee: 90.00 },
+            { id: 149, client: 'Williams Family Trust', address: '9012 Pine Lane, Birmingham, AL 35203', completedDate: '2025-11-25', fee: 75.00 },
+            { id: 150, client: 'Johnson Residence', address: '1234 Peachtree Street, Atlanta, GA 30309', completedDate: '2025-11-29', fee: 85.00 },
             
-            // October 2024
-            { id: 151, client: 'Thompson Development', address: '321 Birch Rd, Augusta, GA 30901', completedDate: '2024-10-03', fee: 80.00 },
-            { id: 152, client: 'Highland Construction', address: '999 Highland, Chattanooga, TN 37401', completedDate: '2024-10-10', fee: 91.00 },
-            { id: 153, client: 'Green Valley Homes', address: '888 Valley View, Columbia, SC 29201', completedDate: '2024-10-17', fee: 88.00 },
-            { id: 154, client: 'Smith Property LLC', address: '5678 Oak Drive, Charlotte, NC 28202', completedDate: '2024-10-24', fee: 95.00 },
-            { id: 155, client: 'Riverfront Builders', address: '777 River Rd, Charleston, SC 29401', completedDate: '2024-10-31', fee: 100.00 }
+            // October 2025
+            { id: 151, client: 'Thompson Development', address: '321 Birch Rd, Augusta, GA 30901', completedDate: '2025-10-03', fee: 80.00 },
+            { id: 152, client: 'Highland Construction', address: '999 Highland, Chattanooga, TN 37401', completedDate: '2025-10-10', fee: 91.00 },
+            { id: 153, client: 'Green Valley Homes', address: '888 Valley View, Columbia, SC 29201', completedDate: '2025-10-17', fee: 88.00 },
+            { id: 154, client: 'Smith Property LLC', address: '5678 Oak Drive, Charlotte, NC 28202', completedDate: '2025-10-24', fee: 95.00 },
+            { id: 155, client: 'Riverfront Builders', address: '777 River Rd, Charleston, SC 29401', completedDate: '2025-10-31', fee: 100.00 }
         ];
         
         let currentRequestsFilter = 'pending';
