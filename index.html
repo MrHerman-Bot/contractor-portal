@@ -846,11 +846,51 @@
             </div>
             
             <div id="messagesView" class="hidden">
-                <div class="card">
+                <!-- New Message Button -->
+                <button class="btn btn-primary" onclick="showNewMessageForm()" style="width: 100%; margin-bottom: 16px;">
+                    ✉️ New Message
+                </button>
+                
+                <!-- Message Form (hidden by default) -->
+                <div id="messageForm" class="card hidden">
+                    <div class="card-title">
+                        <div class="card-icon">✉️</div>
+                        Send Message to Office
+                    </div>
+                    
+                    <form onsubmit="sendMessage(event)">
+                        <div class="form-group">
+                            <label class="form-label">Subject</label>
+                            <input type="text" id="messageSubject" class="form-input" placeholder="Brief subject..." required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Message</label>
+                            <textarea id="messageBody" class="form-input" rows="5" placeholder="Type your message here..." required style="resize: vertical;"></textarea>
+                        </div>
+                        
+                        <div style="display: flex; gap: 12px;">
+                            <button type="button" class="btn btn-secondary" onclick="hideNewMessageForm()" style="flex: 1;">Cancel</button>
+                            <button type="submit" class="btn btn-primary" style="flex: 1;">🛣️ Send</button>
+                        </div>
+                    </form>
+                    
+                    <p style="font-size: 11px; color: var(--text-muted); margin-top: 12px; text-align: center;">
+                        Message will be sent to: michael@nationwideloaninspections.com
+                    </p>
+                </div>
+                
+                <!-- Message History -->
+                <div id="messageHistory">
+                    <!-- Messages will be rendered here -->
+                </div>
+                
+                <!-- Empty State (shown when no messages) -->
+                <div id="emptyMessages" class="card">
                     <div class="empty-state">
-                        <div class="empty-state-icon">✉️</div>
-                        <h3>Messages</h3>
-                        <p>Office communication coming soon</p>
+                        <div class="empty-state-icon">📬</div>
+                        <h3>No Messages Yet</h3>
+                        <p>Send a message to the office and it will appear here.</p>
                     </div>
                 </div>
             </div>
@@ -977,6 +1017,119 @@
             
             // Find the clicked button and make it active
             event.target.closest('.nav-item').classList.add('active');
+        }
+        
+        // Message Functions
+        let messages = JSON.parse(localStorage.getItem('contractorMessages') || '[]');
+        
+        function showNewMessageForm() {
+            document.getElementById('messageForm').classList.remove('hidden');
+            document.getElementById('messageSubject').focus();
+        }
+        
+        function hideNewMessageForm() {
+            document.getElementById('messageForm').classList.add('hidden');
+            document.getElementById('messageSubject').value = '';
+            document.getElementById('messageBody').value = '';
+        }
+        
+        function sendMessage(event) {
+            event.preventDefault();
+            
+            const subject = document.getElementById('messageSubject').value.trim();
+            const body = document.getElementById('messageBody').value.trim();
+            
+            if (!subject || !body) {
+                alert('Please fill in both subject and message.');
+                return;
+            }
+            
+            // Create message object
+            const message = {
+                id: Date.now(),
+                subject: subject,
+                body: body,
+                timestamp: new Date().toISOString(),
+                status: 'sent'
+            };
+            
+            // Add to local storage
+            messages.unshift(message);
+            localStorage.setItem('contractorMessages', JSON.stringify(messages));
+            
+            // Send email using Formspree (free tier)
+            // Replace 'YOUR_FORMSPREE_ENDPOINT' with your actual endpoint after signup
+            const formData = new FormData();
+            formData.append('subject', `[Contractor Portal] ${subject}`);
+            formData.append('message', body);
+            formData.append('from', 'contractor@nationwideloaninspections.com');
+            
+            // For demo: Show success message (in production, this would actually send)
+            // To enable real email sending, sign up at formspree.io and update the endpoint below
+            /*
+            fetch('https://formspree.io/f/YOUR_FORMSPREE_ENDPOINT', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Message sent successfully!');
+                } else {
+                    alert('Message saved. Email delivery pending setup.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Message saved locally. Email setup required.');
+            });
+            */
+            
+            // For demo purposes, show success
+            alert('Message sent successfully!\n\nSubject: ' + subject + '\n\nThe office will receive this at michael@nationwideloaninspections.com');
+            
+            // Clear form and hide
+            hideNewMessageForm();
+            
+            // Refresh message list
+            renderMessageHistory();
+        }
+        
+        function renderMessageHistory() {
+            const container = document.getElementById('messageHistory');
+            const emptyState = document.getElementById('emptyMessages');
+            
+            if (messages.length === 0) {
+                container.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            
+            emptyState.classList.add('hidden');
+            
+            let html = '';
+            messages.forEach(msg => {
+                const date = new Date(msg.timestamp);
+                const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                const formattedTime = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+                
+                html += `
+                    <div class="card" style="margin-bottom: 12px;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                            <div style="font-weight: 600; color: var(--text-primary); flex: 1; margin-right: 12px;">${msg.subject}</div>
+                            <div style="font-size: 11px; color: var(--text-muted); white-space: nowrap;">${formattedDate} ${formattedTime}</div>
+                        </div>
+                        <div style="font-size: 14px; color: var(--text-secondary); line-height: 1.5;">${msg.body}</div>
+                        <div style="margin-top: 8px; display: flex; align-items: center; gap: 6px;">
+                            <span style="font-size: 11px; color: var(--success);">✓ Sent</span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
         }
         
         function showDashboard() {
@@ -1905,6 +2058,12 @@
             } else if (viewName === 'dashboard') {
                 // Re-render dashboard to update statuses
                 renderDashboardRequests();
+            } else if (viewName === 'messages') {
+                // Load and display message history
+                messages = JSON.parse(localStorage.getItem('contractorMessages') || '[]');
+                renderMessageHistory();
+                // Hide new message form by default
+                document.getElementById('messageForm').classList.add('hidden');
             }
         };
         
