@@ -707,11 +707,11 @@
                     <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 16px;">Take photos of the property inspection:</p>
                     
                     <!-- Photo Upload Button -->
-                    <input type="file" id="cameraInput" accept="image/*" multiple style="display: none;" onchange="handlePhotoCapture(event)">
+                    <input type="file" id="cameraInput" accept="image/*" style="display: none;" onchange="handlePhotoCapture(event)">
                     <button class="btn btn-primary" onclick="document.getElementById('cameraInput').click()" style="width: 100%; margin-bottom: 8px;">
-                        📷 Add Photos
+                        📷 Use Camera
                     </button>
-                    <p style="font-size: 11px; color: var(--text-muted); text-align: center; margin-bottom: 16px;">Take photos with your camera app, then select them here</p>
+                    <p style="font-size: 11px; color: var(--text-muted); text-align: center; margin-bottom: 16px;">Select photo from gallery or take a new photo</p>
                     
                     <!-- Photo Gallery -->
                     <div id="photoGallery" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px;">
@@ -1020,40 +1020,20 @@
         }
         
         function handlePhotoCapture(event) {
-            const files = event.target.files;
-            console.log('Files selected:', files ? files.length : 0);
-            
-            if (files && files.length > 0) {
-                const totalFiles = files.length;
-                let processedCount = 0;
-                
-                Array.from(files).forEach((file, index) => {
-                    console.log('Processing file:', index, file.name);
-                    const reader = new FileReader();
-                    
-                    reader.onload = function(e) {
-                        console.log('File loaded:', index);
-                        capturedPhotos.push({
-                            id: Date.now() + index,
-                            src: e.target.result,
-                            rotation: 0
-                        });
-                        processedCount++;
-                        console.log('Processed:', processedCount, 'of', totalFiles);
-                        
-                        // Render gallery after each photo for immediate feedback
-                        renderPhotoGallery();
-                    };
-                    
-                    reader.onerror = function(e) {
-                        console.error('Error reading file:', index, e);
-                        processedCount++;
-                    };
-                    
-                    reader.readAsDataURL(file);
-                });
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    capturedPhotos.push({
+                        id: Date.now(),
+                        src: e.target.result,
+                        rotation: 0
+                    });
+                    renderPhotoGallery();
+                };
+                reader.readAsDataURL(file);
             }
-            // Reset input so same photos can be selected again if needed
+            // Reset input so same photo can be selected again if needed
             event.target.value = '';
         }
         
@@ -1103,10 +1083,9 @@
         
         function renderPhotoGallery() {
             const gallery = document.getElementById('photoGallery');
-            console.log('Rendering gallery, photos count:', capturedPhotos.length);
             
             if (capturedPhotos.length === 0) {
-                gallery.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 20px; color: var(--text-muted); font-size: 14px;">No photos yet. Tap "Add Photos" to select photos.</div>';
+                gallery.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 20px; color: var(--text-muted); font-size: 14px;">No photos yet. Tap "Use Camera" to add photos.</div>';
                 return;
             }
             
@@ -1121,7 +1100,6 @@
             });
             
             gallery.innerHTML = html;
-            console.log('Gallery rendered with', capturedPhotos.length, 'photos');
         }
         
         function openPhotoViewer(index) {
