@@ -1041,8 +1041,8 @@
             if (activeRequests.length > 0) {
                 activeRequests.forEach(req => {
                     const option = document.createElement('option');
-                    option.value = `Request #${req.id}: ${req.client}`;
-                    option.textContent = `#${req.id}: ${req.client} (${req.dueDate || 'No date'})`;
+                    option.value = `Request #${req.id}: ${req.address}`;
+                    option.textContent = `#${req.id}: ${req.address.substring(0, 40)}${req.address.length > 40 ? '...' : ''}`;
                     activeRequestsGroup.appendChild(option);
                 });
             } else {
@@ -1862,8 +1862,8 @@
                 }
                 
             } else if (organizer === 'currentYear') {
-                // Current year only (2025)
-                const currentYear = 2025;
+                // Current year only (2026)
+                const currentYear = 2026;
                 const yearRequests = sorted.filter(req => new Date(req.completedDate).getFullYear() === currentYear);
                 const yearCount = yearRequests.length;
                 const yearTotal = yearRequests.reduce((sum, req) => sum + req.fee, 0);
