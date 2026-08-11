@@ -864,7 +864,13 @@
                     <form onsubmit="sendMessage(event)">
                         <div class="form-group">
                             <label class="form-label">Subject</label>
-                            <input type="text" id="messageSubject" class="form-input" placeholder="Brief subject..." required>
+                            <select id="messageSubject" class="form-input" required>
+                                <option value="">Select a subject...</option>
+                                <option value="General Communication">General Communication</option>
+                                <optgroup id="activeRequestsGroup" label="Active Requests">
+                                    <!-- Active requests will be populated here -->
+                                </optgroup>
+                            </select>
                         </div>
                         
                         <div class="form-group">
@@ -1026,6 +1032,28 @@
         let messages = JSON.parse(localStorage.getItem('contractorMessages') || '[]');
         
         function showNewMessageForm() {
+            // Populate active requests dropdown
+            const activeRequestsGroup = document.getElementById('activeRequestsGroup');
+            activeRequestsGroup.innerHTML = ''; // Clear existing
+            
+            // Add active requests to the dropdown
+            const activeRequests = pendingRequests.filter(r => r.status !== 'Declined - Under Review');
+            if (activeRequests.length > 0) {
+                activeRequests.forEach(req => {
+                    const option = document.createElement('option');
+                    option.value = `Request #${req.id}: ${req.client}`;
+                    option.textContent = `#${req.id}: ${req.client} (${req.dueDate || 'No date'})`;
+                    activeRequestsGroup.appendChild(option);
+                });
+            } else {
+                // If no active requests, add a placeholder
+                const option = document.createElement('option');
+                option.value = '';
+                option.textContent = 'No active requests';
+                option.disabled = true;
+                activeRequestsGroup.appendChild(option);
+            }
+            
             document.getElementById('messageForm').classList.remove('hidden');
             document.getElementById('messageSubject').focus();
         }
